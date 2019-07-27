@@ -1,13 +1,32 @@
 pico-8 cartridge // http://www.pico-8.com
 version 16
 __lua__
-x=64
-y=64
+
 dir=nil
 l=0
 r=1
 u=2
 d=3
+
+p1 = {}
+p2 = {}
+
+p1.x = 58
+p1.y = 64
+p1.len = 4
+
+p2.x = 70
+p2.y = 64
+p2.len = 4
+-- p2 = {x: 66, y: 64}
+-- ps = [p1, p2]
+
+-- [ ] push head to array
+-- [ ] pop tail from array
+-- [ ] white head, when started
+-- [ ] collision with other ps
+-- [ ] reappear when reached edge
+-- [ ] fruits (apple sprite)
 
 function _init()
 
@@ -27,21 +46,22 @@ function _update()
 end
 
 function _draw()
-		rectfill(x,y,x+1,y+1,12)
+  pset(p1.x,p1.y,12)
+  pset(p2.x,p2.y,10)
 end
 
 function left()
-		x = x-1
+  p1.x = p1.x-1
 end
 
 function right()
-  x = x+1
+  p1.x = p1.x+1
 end
 
 function up()
-  y = y-1
+  p1.y = p1.y-1
 end
 
 function down()
-  y = y+1
+  p1.y = p1.y+1
 end
