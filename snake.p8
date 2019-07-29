@@ -58,7 +58,7 @@ function _update()
   elseif p2.dir==3 then p2.y+=1
   else end -- no dir, initial state
 
-  add(p1.trail, {p1.x, p2.y})
+  add(p1.trail, {p1.x, p1.y})
   -- print(tostr(p1.trail[1][1]))
 
   if #p1.trail > p1.len then
@@ -85,9 +85,9 @@ function _draw()
 
   p1_tail = p1.trail[#p1.trail]
 
-  pset(p1_tail[1],p1_tail[2],8)
-  print("x" .. tostr(p1_tail[1]))
-  print("y" .. tostr(p1_tail[2]))
+  pset(p1_tail[1],p1_tail[2],0)
+  -- print("x" .. tostr(p1_tail[1]))
+  -- print("y" .. tostr(p1_tail[2]))
 end
 
 __gfx__
