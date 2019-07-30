@@ -36,20 +36,42 @@ function _init()
 end
 
 function _update()
-  if (btnp(0,0)) then p1.dir=0 end
-  if (btnp(1,0)) then p1.dir=1 end
-  if (btnp(2,0)) then p1.dir=2 end
-  if (btnp(3,0)) then p1.dir=3 end
+  if (btnp(0,0)) then
+    p1.dir=0
+    -- print(#p1.trail)
+    -- print(p1.x) print(p1.y) print(tostr({p1.x,p1.y}))
+    -- add(p1.trail, {x=p1.x, y=p1.y})
+  end
+  if (btnp(1,0)) then
+    p1.dir=1
+    -- add(p1.trail, {x=p1.x, y=p1.y})
+  end
+  if (btnp(2,0)) then
+    p1.dir=2
+    -- add(p1.trail, {x=p1.x, y=p1.y})
+  end
+  if (btnp(3,0)) then
+    p1.dir=3
+    -- add(p1.trail, {x=p1.x, y=p1.y})
+  end
 
   if (btnp(0,1)) then p2.dir=0 end
   if (btnp(1,1)) then p2.dir=1 end
   if (btnp(2,1)) then p2.dir=2 end
   if (btnp(3,1)) then p2.dir=3 end
 
-  if     p1.dir==0 then p1.x-=1
-  elseif p1.dir==1 then p1.x+=1
-  elseif p1.dir==2 then p1.y-=1
-  elseif p1.dir==3 then p1.y+=1
+  if     p1.dir==0 then
+    add(p1.trail, {x=p1.x, y=p1.y})
+    p1.x-=1
+  elseif p1.dir==1 then
+    add(p1.trail, {x=p1.x, y=p1.y})
+    p1.x+=1
+  elseif p1.dir==2 then
+    add(p1.trail, {x=p1.x, y=p1.y})
+    p1.y-=1
+  elseif p1.dir==3 then
+    add(p1.trail, {x=p1.x, y=p1.y})
+    p1.y+=1
   else end -- no dir, initial state
 
   if     p2.dir==0 then p2.x-=1
@@ -58,19 +80,21 @@ function _update()
   elseif p2.dir==3 then p2.y+=1
   else end -- no dir, initial state
 
-  add(p1.trail, {p1.x, p1.y})
-  -- print(tostr(p1.trail[1][1]))
 
   if #p1.trail > p1.len then
 
     for idx,coord in pairs(p1.trail) do
-      -- print("idx" .. tostr(idx))
-      if idx > #p1.trail then
+      -- printh("# idx" .. tostr(idx))
+      -- printh("  coord: "..tostrcoord(coord))
+      if idx > #p1.trail-1 then
+        printh("deleting: "..idx.."="..tostrcoord(coord))
         del(p1.trail, coord)
       end
     end
 
   end
+
+  printh(tostrtable(p1.trail))
 end
 
 function _draw()
@@ -83,11 +107,32 @@ function _draw()
   -- draw p2's head
   pset(p2.x,p2.y,10)
 
-  p1_tail = p1.trail[#p1.trail]
 
-  pset(p1_tail[1],p1_tail[2],0)
+
+  -- printh(p1.len)
+
+  if #p1.trail >= p1.len then
+    p1_tail = p1.trail[p1.len]
+    printh("coloring: "..p1.len.."="..tostrcoord(p1_tail))
+    pset(p1_tail.x,p1_tail.y,8)
+   -- printh()
+    -- pset(p1_tail[1],p1_tail[2],6)
+  end
+  -- print(#p1.trail)
   -- print("x" .. tostr(p1_tail[1]))
   -- print("y" .. tostr(p1_tail[2]))
+end
+
+function tostrtable(t)
+  local s = ""
+  for v in all(t) do
+    s = state .. tostrcoord(v) .. " "
+  end
+  return s
+end
+
+function tostrcoord(c)
+  return "{x="..c.x..",y="..c.y.."}"
 end
 
 __gfx__
