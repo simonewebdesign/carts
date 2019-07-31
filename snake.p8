@@ -17,54 +17,11 @@ p2 = {}
 p2.x = 70
 p2.y = 64
 p2.len = 5
--- [x] push head to array
--- [x] pop tail from array
--- [ ] white head, when started
+
+-- todo priorities:
 -- [ ] collision with other ps
 -- [ ] reappear when reached edge
--- [x] fruits (apple sprite)
--- [x] dont add/del to trail; simply read from canvas before the move
--- [x] but you probably need to keep track of the trail somehow
---     unless
--- [x] find a way to delete tail without tracking the trail
--- [x] maybe keep track of just the tail, which is essentially the oldest
---     coord in the trail
---     you can start keeping track of the tail when the lenght has been reached
---     and replace it on every frame/update
---     so to recap:
--- [x] p1.tail is nil at the very beginning
--- [x] _update: as soon as len => maxlen, populate tail
--- [x] _draw: if tail ~= nil, do clear the pixel
-
---     done. now the problem is, i still need to keep track of a trail.
---     when i reach a length of five, i don't know anymore where i was on len=0.
---     maybe keep only track of tail-5, if that makes sense.
---     the concept of trail keeps coming back.
--- [x] check an online tutorial
---     ok, there is _definitely_ a need to keep track of the trail.
---     the only way around that really was, if you'd have a snake that's
---     already 5 length. you can consider doing that if you want. but think
---     carefully.
-
---     thinking about it, even if the snake was already 5 in length, that wouldnt
---     change the fact that i need to know, from the very beginning, the whole
---     trail!!!
-
--- [x] add the trail back
--- [x] make it a proper stack
--- [x] https://www.lexaloffle.com/bbs/?tid=3389
---     tl;dr the trick here is to nullify the value after using it
---     no need to check for nil which is nice
--- [x] _update: if #trail >= len, pop the last to make space for the next one,
---     then add. or else just add. so essentially add is out of the if, i.e.
---     it will happen regardless.
-
--- [x] _draw: if #trail >= len, get the last coord and blank it
-
--- jeez, you dont want a stack, you want a queue!!!
-
--- lua might silently fail if you make a typo such as p1,x :(
-
+-- [ ] white head, when started
 
 function _init()
  -- random initial coords
