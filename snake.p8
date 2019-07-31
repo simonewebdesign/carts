@@ -8,8 +8,7 @@ dot = {}
 p1 = {}
 p1.x = 58
 p1.y = 64
-p1.len = 0
-p1.maxlen = 5
+p1.len = 5
 -- dir is nil by default
 -- tail is nil by default
 
@@ -73,26 +72,10 @@ function _update()
   if (btnp(2,1)) then p2.dir=2 end
   if (btnp(3,1)) then p2.dir=3 end
 
-  if     p1.dir==0 then
-    p1.x-=1
-    if p1.len < p1.maxlen then
-      p1.len+=1
-    end
-  elseif p1.dir==1 then
-    p1.x+=1
-    if p1.len < p1.maxlen then
-      p1.len+=1
-    end
-  elseif p1.dir==2 then
-    p1.y-=1
-    if p1.len < p1.maxlen then
-      p1.len+=1
-    end
-  elseif p1.dir==3 then
-    p1.y+=1
-    if p1.len < p1.maxlen then
-      p1.len+=1
-    end
+  if     p1.dir==0 then p1.x-=1
+  elseif p1.dir==1 then p1.x+=1
+  elseif p1.dir==2 then p1.y-=1
+  elseif p1.dir==3 then p1.y+=1
   else end -- no dir, initial state
 
   if     p2.dir==0 then p2.x-=1
@@ -101,20 +84,6 @@ function _update()
   elseif p2.dir==3 then p2.y+=1
   else end -- no dir, initial state
 
-  if p1.len >= p1.maxlen then
-    p1.tail = {x=p1.x, y=p1.y}
-  end
-  if p1.len >= p1.maxlen then
-    p1.tail = {x=p1.x, y=p1.y}
-  end
-  if p1.len >= p1.maxlen then
-    p1.tail = {x=p1.x, y=p1.y}
-  end
-  if p1.len >= p1.maxlen then
-    p1.tail = {x=p1.x, y=p1.y}
-  end
-
-  printh("len="..p1.len)
 end
 
 function _draw()
@@ -126,9 +95,6 @@ function _draw()
 
   -- draw p2's head
   pset(p2.x,p2.y,10)
-
-  if p1.tail then printh("tail="..tostrcoord(p1.tail)) end
-  if p1.tail then pset(p1.tail.x, p1.tail.y,8) end
 end
 
 function tostrtable(t)
