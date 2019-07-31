@@ -10,14 +10,15 @@ p1.x = 58
 p1.y = 64
 p1.len = 5
 -- dir is nil by default
--- tail is nil by default
+p1.trail = {}
+
 
 p2 = {}
 p2.x = 70
 p2.y = 64
 p2.len = 5
--- [ ] push head to array
--- [ ] pop tail from array
+-- [x] push head to array
+-- [x] pop tail from array
 -- [ ] white head, when started
 -- [ ] collision with other ps
 -- [ ] reappear when reached edge
@@ -49,16 +50,20 @@ p2.len = 5
 --     change the fact that i need to know, from the very beginning, the whole
 --     trail!!!
 
--- [ ] add the trail back
--- [ ] make it a proper stack
--- [ ] https://www.lexaloffle.com/bbs/?tid=3389
+-- [x] add the trail back
+-- [x] make it a proper stack
+-- [x] https://www.lexaloffle.com/bbs/?tid=3389
 --     tl;dr the trick here is to nullify the value after using it
 --     no need to check for nil which is nice
--- [ ] _update: if #trail >= len, pop the last to make space for the next one,
+-- [x] _update: if #trail >= len, pop the last to make space for the next one,
 --     then add. or else just add. so essentially add is out of the if, i.e.
 --     it will happen regardless.
 
--- [ ] _draw: if #trail >= len, get the last coord and blank it
+-- [x] _draw: if #trail >= len, get the last coord and blank it
+
+-- jeez, you dont want a stack, you want a queue!!!
+
+-- lua might silently fail if you make a typo such as p1,x :(
 
 
 function _init()
@@ -78,10 +83,18 @@ function _update()
   if (btnp(2,1)) then p2.dir=2 end
   if (btnp(3,1)) then p2.dir=3 end
 
-  if     p1.dir==0 then p1.x-=1
-  elseif p1.dir==1 then p1.x+=1
-  elseif p1.dir==2 then p1.y-=1
-  elseif p1.dir==3 then p1.y+=1
+  if     p1.dir==0 then
+    add(p1.trail, {x=p1.x, y=p1.y})
+    p1.x-=1
+  elseif p1.dir==1 then
+    add(p1.trail, {x=p1.x, y=p1.y})
+    p1.x+=1
+  elseif p1.dir==2 then
+    add(p1.trail, {x=p1.x, y=p1.y})
+    p1.y-=1
+  elseif p1.dir==3 then
+    add(p1.trail, {x=p1.x, y=p1.y})
+    p1.y+=1
   else end -- no dir, initial state
 
   if     p2.dir==0 then p2.x-=1
@@ -90,14 +103,33 @@ function _update()
   elseif p2.dir==3 then p2.y+=1
   else end -- no dir, initial state
 
+  if #p1.trail >= p1.len+1 then
+    local hd = p1.trail[1]
+
+    -- del() shifts the indexes
+    -- so trail becomes a queue
+    del(p1.trail, hd)
+  end
+
+  printh("trail="..tostrtable(p1.trail))
 end
 
 function _draw()
+  -- cleanup first
+  if #p1.trail >= p1.len then
+    local tail = p1.trail[1]
+    printh("tail="..tostrcoord(tail))
+
+    -- cut p1's tail
+    pset(tail.x,tail.y,0)
+  end
+
   -- the dot/fruit
   spr(2,dot.x,dot.y)
 
   -- draw p1's head
   pset(p1.x,p1.y,12)
+  printh("head="..tostrcoord({x=p1.x, y=p1.y}))
 
   -- draw p2's head
   pset(p2.x,p2.y,10)
@@ -106,7 +138,7 @@ end
 function tostrtable(t)
   local s = ""
   for v in all(t) do
-    s = state .. tostrcoord(v) .. " "
+    s = s .. tostrcoord(v) .. " "
   end
   return s
 end
