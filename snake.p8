@@ -23,18 +23,38 @@ p2.len = 5
 -- [ ] collision with other ps
 -- [ ] reappear when reached edge
 -- [x] fruits (apple sprite)
--- [ ] dont add/del to trail; simply read from canvas before the move
--- [ ] but you probably need to keep track of the trail somehow
+-- [x] dont add/del to trail; simply read from canvas before the move
+-- [x] but you probably need to keep track of the trail somehow
 --     unless
--- [ ] find a way to delete tail without tracking the trail
--- [ ] maybe keep track of just the tail, which is essentially the oldest
+-- [x] find a way to delete tail without tracking the trail
+-- [x] maybe keep track of just the tail, which is essentially the oldest
 --     coord in the trail
 --     you can start keeping track of the tail when the lenght has been reached
 --     and replace it on every frame/update
 --     so to recap:
--- [ ] p1.tail is nil at the very beginning
--- [ ] _update: as soon as len => maxlen, populate tail
--- [ ] _draw: if tail ~= nil, do clear the pixel
+-- [x] p1.tail is nil at the very beginning
+-- [x] _update: as soon as len => maxlen, populate tail
+-- [x] _draw: if tail ~= nil, do clear the pixel
+
+--     done. now the problem is, i still need to keep track of a trail.
+--     when i reach a length of five, i don't know anymore where i was on len=0.
+--     maybe keep only track of tail-5, if that makes sense.
+--     the concept of trail keeps coming back.
+-- [x] check an online tutorial
+--     ok, there is _definitely_ a need to keep track of the trail.
+--     the only way around that really was, if you'd have a snake that's
+--     already 5 length. you can consider doing that if you want. but think
+--     carefully.
+
+--     thinking about it, even if the snake was already 5 in length, that wouldnt
+--     change the fact that i need to know, from the very beginning, the whole
+--     trail!!!
+
+-- [ ] add the trail back
+-- [ ] make it a proper stack
+-- [ ] https://www.lexaloffle.com/bbs/?tid=3389
+--     tl;dr the trick here is to nullify the value after using it
+--     no need to check for nil which is nice
 
 function _init()
   -- random initial coords
@@ -43,18 +63,10 @@ function _init()
 end
 
 function _update()
-  if (btnp(0,0)) then
-    p1.dir=0
-  end
-  if (btnp(1,0)) then
-    p1.dir=1
-  end
-  if (btnp(2,0)) then
-    p1.dir=2
-  end
-  if (btnp(3,0)) then
-    p1.dir=3
-  end
+  if (btnp(0,0)) then p1.dir=0 end
+  if (btnp(1,0)) then p1.dir=1 end
+  if (btnp(2,0)) then p1.dir=2 end
+  if (btnp(3,0)) then p1.dir=3 end
 
   if (btnp(0,1)) then p2.dir=0 end
   if (btnp(1,1)) then p2.dir=1 end
@@ -63,12 +75,24 @@ function _update()
 
   if     p1.dir==0 then
     p1.x-=1
+    if p1.len < p1.maxlen then
+      p1.len+=1
+    end
   elseif p1.dir==1 then
     p1.x+=1
+    if p1.len < p1.maxlen then
+      p1.len+=1
+    end
   elseif p1.dir==2 then
     p1.y-=1
+    if p1.len < p1.maxlen then
+      p1.len+=1
+    end
   elseif p1.dir==3 then
     p1.y+=1
+    if p1.len < p1.maxlen then
+      p1.len+=1
+    end
   else end -- no dir, initial state
 
   if     p2.dir==0 then p2.x-=1
@@ -76,6 +100,21 @@ function _update()
   elseif p2.dir==2 then p2.y-=1
   elseif p2.dir==3 then p2.y+=1
   else end -- no dir, initial state
+
+  if p1.len >= p1.maxlen then
+    p1.tail = {x=p1.x, y=p1.y}
+  end
+  if p1.len >= p1.maxlen then
+    p1.tail = {x=p1.x, y=p1.y}
+  end
+  if p1.len >= p1.maxlen then
+    p1.tail = {x=p1.x, y=p1.y}
+  end
+  if p1.len >= p1.maxlen then
+    p1.tail = {x=p1.x, y=p1.y}
+  end
+
+  printh("len="..p1.len)
 end
 
 function _draw()
@@ -87,6 +126,9 @@ function _draw()
 
   -- draw p2's head
   pset(p2.x,p2.y,10)
+
+  if p1.tail then printh("tail="..tostrcoord(p1.tail)) end
+  if p1.tail then pset(p1.tail.x, p1.tail.y,8) end
 end
 
 function tostrtable(t)
