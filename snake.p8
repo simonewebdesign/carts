@@ -8,8 +8,10 @@ dot = {}
 p1 = {}
 p1.x = 58
 p1.y = 64
-p1.len = 5
+p1.len = 0
+p1.maxlen = 5
 -- dir is nil by default
+-- tail is nil by default
 
 p2 = {}
 p2.x = 70
@@ -25,6 +27,14 @@ p2.len = 5
 -- [ ] but you probably need to keep track of the trail somehow
 --     unless
 -- [ ] find a way to delete tail without tracking the trail
+-- [ ] maybe keep track of just the tail, which is essentially the oldest
+--     coord in the trail
+--     you can start keeping track of the tail when the lenght has been reached
+--     and replace it on every frame/update
+--     so to recap:
+-- [ ] p1.tail is nil at the very beginning
+-- [ ] _update: as soon as len => maxlen, populate tail
+-- [ ] _draw: if tail ~= nil, do clear the pixel
 
 function _init()
   -- random initial coords
