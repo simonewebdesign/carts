@@ -54,6 +54,12 @@ p2.len = 5
 -- [ ] https://www.lexaloffle.com/bbs/?tid=3389
 --     tl;dr the trick here is to nullify the value after using it
 --     no need to check for nil which is nice
+-- [ ] _update: if #trail >= len, pop the last to make space for the next one,
+--     then add. or else just add. so essentially add is out of the if, i.e.
+--     it will happen regardless.
+
+-- [ ] _draw: if #trail >= len, get the last coord and blank it
+
 
 function _init()
   -- random initial coords
