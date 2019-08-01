@@ -23,6 +23,11 @@ p2.len = 5
 -- [ ] reappear when reached edge
 -- [ ] white head, when started
 
+-- screen center minus the
+-- string height in pixels,
+-- cut in half
+vcenter=61
+
 
 function _init()
  -- random initial coords
@@ -37,21 +42,33 @@ function _update()
  end
 
  if     p1.dir==0 then
-  -- todo: check if collides
-  -- with next coord. if it does,
-  -- don't do this but display
-  -- game over - player n wins!
-  add(p1.trail, {x=p1.x, y=p1.y})
-  p1.x-=1
+  if collides({x=p1.x-1, y=p1.y}) then
+   game_over("left")
+  else
+   add(p1.trail, {x=p1.x, y=p1.y})
+   p1.x-=1
+  end
  elseif p1.dir==1 then
-  add(p1.trail, {x=p1.x, y=p1.y})
-  p1.x+=1
+  if collides({x=p1.x+1, y=p1.y}) then
+   game_over("right")
+  else
+   add(p1.trail, {x=p1.x, y=p1.y})
+   p1.x+=1
+  end
  elseif p1.dir==2 then
-  add(p1.trail, {x=p1.x, y=p1.y})
-  p1.y-=1
+  if collides({x=p1.x, y=p1.y-1}) then
+   game_over("up")
+  else
+   add(p1.trail, {x=p1.x, y=p1.y})
+   p1.y-=1
+  end
  elseif p1.dir==3 then
-  add(p1.trail, {x=p1.x, y=p1.y})
-  p1.y+=1
+  if collides({x=p1.x, y=p1.y+1}) then
+   game_over("down")
+  else
+   add(p1.trail, {x=p1.x, y=p1.y})
+   p1.y+=1
+  end
  else end -- no dir, initial state
 
  if     p2.dir==0 then p2.x-=1
@@ -94,9 +111,9 @@ function _draw()
 end
 
 -- true if pixel is not black
--- function collides(coord)
--- 	pget(coord.x, coord.y) > 0
--- end
+function collides(c)
+ return pget(c.x, c.y) > 0
+end
 
 
 function set_player_dir(id)
@@ -119,6 +136,22 @@ end
 function tostrcoord(c)
  return "{x="..c.x..",y="..c.y.."}"
 end
+
+-- screen center minus the
+-- string length times the
+-- pixels in a char's width,
+-- cut in half
+function hcenter(str)
+ return 64 -#str * 2
+end
+
+
+function game_over(winner)
+ text="game over. player " ..
+  winner .. " wins!"
+ print(text,hcenter(text),vcenter,8)
+end
+
 
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
