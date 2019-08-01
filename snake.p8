@@ -37,36 +37,44 @@ end
 
 
 function _update()
+ if p1.game_over then
+  local hd = p1.trail[#p1.trail]
+
+  -- del() shifts the indexes
+  -- so trail becomes a queue
+  del(p1.trail, hd)
+ end
+
  for i=0,1 do -- todo: 0,n players
 	 set_player_dir(i)
  end
 
- if     p1.dir==0 then
+ if     not p1.game_over and p1.dir==0 then
+  add(p1.trail, {x=p1.x, y=p1.y})
   if collides({x=p1.x-1, y=p1.y}) then
-   game_over("left")
+   p1.game_over = true
   else
-   add(p1.trail, {x=p1.x, y=p1.y})
    p1.x-=1
   end
- elseif p1.dir==1 then
+ elseif not p1.game_over and p1.dir==1 then
+  add(p1.trail, {x=p1.x, y=p1.y})
   if collides({x=p1.x+1, y=p1.y}) then
-   game_over("right")
+   p1.game_over = true
   else
-   add(p1.trail, {x=p1.x, y=p1.y})
    p1.x+=1
   end
- elseif p1.dir==2 then
+ elseif not p1.game_over and p1.dir==2 then
+  add(p1.trail, {x=p1.x, y=p1.y})
   if collides({x=p1.x, y=p1.y-1}) then
-   game_over("up")
+   p1.game_over = true
   else
-   add(p1.trail, {x=p1.x, y=p1.y})
    p1.y-=1
   end
- elseif p1.dir==3 then
+ elseif not p1.game_over and p1.dir==3 then
+  add(p1.trail, {x=p1.x, y=p1.y})
   if collides({x=p1.x, y=p1.y+1}) then
-   game_over("down")
+   p1.game_over = true
   else
-   add(p1.trail, {x=p1.x, y=p1.y})
    p1.y+=1
   end
  else end -- no dir, initial state
@@ -77,7 +85,7 @@ function _update()
  elseif p2.dir==3 then p2.y+=1
  else end -- no dir, initial state
 
- if #p1.trail >= p1.len+1 then
+ if not p1.game_over and #p1.trail >= p1.len+1 then
   local hd = p1.trail[1]
 
   -- del() shifts the indexes
@@ -90,6 +98,24 @@ end
 
 
 function _draw()
+ -- the dot/fruit
+ spr(2,dot.x,dot.y)
+
+ if p1.game_over and #p1.trail > 0 then
+  local hd = p1.trail[#p1.trail]
+  -- cut p1's head
+  pset(hd.x,hd.y,0)
+
+  for c in all(p1.trail) do
+   if c == hd then
+    -- printh("deleted="..tostrcoord({hd.x,hd.y}))
+   else
+    -- random color except black
+    pset(c.x,c.y,flr(rnd(14))+1)
+   end
+  end
+ end
+
  -- cleanup first
  if #p1.trail >= p1.len then
   local tail = p1.trail[1]
@@ -99,16 +125,18 @@ function _draw()
   pset(tail.x,tail.y,0)
  end
 
- -- the dot/fruit
- spr(2,dot.x,dot.y)
-
  -- draw p1's head
- pset(p1.x,p1.y,12)
- printh("head="..tostrcoord({x=p1.x, y=p1.y}))
+ if (not p1.game_over) then
+  pset(p1.x,p1.y,12)
+  printh("head="..tostrcoord({x=p1.x, y=p1.y}))
+ end
 
  -- draw p2's head
- pset(p2.x,p2.y,10)
+ if (not p2.game_over) then
+  pset(p2.x,p2.y,10)
+ end
 end
+
 
 -- true if pixel is not black
 function collides(c)
@@ -146,11 +174,11 @@ function hcenter(str)
 end
 
 
-function game_over(winner)
- text="game over. player " ..
-  winner .. " wins!"
- print(text,hcenter(text),vcenter,8)
-end
+-- function game_over(winner)
+--  text="game over. player " ..
+--   winner .. " wins!"
+--  print(text,hcenter(text),vcenter,8)
+-- end
 
 
 __gfx__
