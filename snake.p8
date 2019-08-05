@@ -2,6 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 16
 __lua__
 -- fruit snake
+-- by simone
 
 dot = {}
 
@@ -19,9 +20,11 @@ p2.y = 64
 p2.len = 5
 
 -- todo priorities:
--- [ ] collision with other ps
+-- [ ] forbid going to opposite dir
 -- [ ] reappear when reached edge
 -- [ ] white head, when started
+-- [ ] start screen
+
 
 -- screen center minus the
 -- string height in pixels,
