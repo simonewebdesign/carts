@@ -18,13 +18,21 @@ p2 = {}
 p2.x = 70
 p2.y = 64
 p2.len = 5
+p2.trail = {}
+
+ps = {
+ p1, p2
+}
 
 -- todo priorities:
--- [ ] forbid going to opposite dir
+-- [x] forbid going to opposite dir
 -- [ ] reappear when reached edge
 -- [ ] white head, when started
 -- [ ] start screen
 
+-- try to leave refactoring for later
+-- and get inspired from jelpi
+-- [ ] refactor the add
 
 -- screen center minus the
 -- string height in pixels,
@@ -40,60 +48,10 @@ end
 
 
 function _update()
- if p1.game_over then
-  local hd = p1.trail[#p1.trail]
-
-  -- del() shifts the indexes
-  -- so trail becomes a queue
-  del(p1.trail, hd)
- end
-
- for i=0,1 do -- todo: 0,n players
-	 set_player_dir(i)
- end
-
- if     not p1.game_over and p1.dir==0 then
-  add(p1.trail, {x=p1.x, y=p1.y})
-  if collides({x=p1.x-1, y=p1.y}) then
-   p1.game_over = true
-  else
-   p1.x-=1
-  end
- elseif not p1.game_over and p1.dir==1 then
-  add(p1.trail, {x=p1.x, y=p1.y})
-  if collides({x=p1.x+1, y=p1.y}) then
-   p1.game_over = true
-  else
-   p1.x+=1
-  end
- elseif not p1.game_over and p1.dir==2 then
-  add(p1.trail, {x=p1.x, y=p1.y})
-  if collides({x=p1.x, y=p1.y-1}) then
-   p1.game_over = true
-  else
-   p1.y-=1
-  end
- elseif not p1.game_over and p1.dir==3 then
-  add(p1.trail, {x=p1.x, y=p1.y})
-  if collides({x=p1.x, y=p1.y+1}) then
-   p1.game_over = true
-  else
-   p1.y+=1
-  end
- else end -- no dir, initial state
-
- if     p2.dir==0 then p2.x-=1
- elseif p2.dir==1 then p2.x+=1
- elseif p2.dir==2 then p2.y-=1
- elseif p2.dir==3 then p2.y+=1
- else end -- no dir, initial state
-
- if not p1.game_over and #p1.trail >= p1.len+1 then
-  local hd = p1.trail[1]
-
-  -- del() shifts the indexes
-  -- so trail becomes a queue
-  del(p1.trail, hd)
+ for i=0,1 do
+  update_game_over(i)
+  set_player_dir(i)
+  update_snake(i)
  end
 
  printh("trail="..tostrtable(p1.trail))
@@ -104,28 +62,11 @@ function _draw()
  -- the dot/fruit
  spr(2,dot.x,dot.y)
 
- if p1.game_over and #p1.trail > 0 then
-  local hd = p1.trail[#p1.trail]
-  -- cut p1's head
-  pset(hd.x,hd.y,0)
+ for i=0,1 do
+  local pl = ps[i+1] -- 1 based
 
-  for c in all(p1.trail) do
-   if c == hd then
-    -- printh("deleted="..tostrcoord({hd.x,hd.y}))
-   else
-    -- random color except black
-    pset(c.x,c.y,flr(rnd(14))+1)
-   end
-  end
- end
-
- -- cleanup first
- if #p1.trail >= p1.len then
-  local tail = p1.trail[1]
-  printh("tail="..tostrcoord(tail))
-
-  -- cut p1's tail
-  pset(tail.x,tail.y,0)
+  draw_game_over(pl)
+  draw_cut_tail(pl)
  end
 
  -- draw p1's head
@@ -147,13 +88,112 @@ function collides(c)
 end
 
 
-function set_player_dir(id)
- if (btnp(0,id)) p1.dir=0
- if (btnp(1,id)) p1.dir=1
- if (btnp(2,id)) p1.dir=2
- if (btnp(3,id)) p1.dir=3
+
+-- _update functions
+
+function update_game_over(id)
+ local pl = ps[id+1] -- 1 based
+
+ if pl.game_over then
+  local hd = pl.trail[#pl.trail]
+
+  -- del() shifts the indexes
+  -- so trail becomes a queue
+  del(pl.trail, hd)
+ end
 end
 
+
+function set_player_dir(id)
+ local pl = ps[id+1] -- 1 based
+
+ if (pl.dir ~= 1 and btnp(0,id)) pl.dir=0
+ if (pl.dir ~= 0 and btnp(1,id)) pl.dir=1
+ if (pl.dir ~= 3 and btnp(2,id)) pl.dir=2
+ if (pl.dir ~= 2 and btnp(3,id)) pl.dir=3
+end
+
+
+function update_snake(id)
+ local pl = ps[id+1]
+
+ if pl.game_over then return end
+
+ if pl.dir ~= nil then
+  add(pl.trail, {x=pl.x, y=pl.y})
+ end
+
+ if     pl.dir==0 then
+  if collides({x=pl.x-1, y=pl.y}) then
+   pl.game_over = true
+  else
+   pl.x-=1
+  end
+ elseif pl.dir==1 then
+  if collides({x=pl.x+1, y=pl.y}) then
+   pl.game_over = true
+  else
+   pl.x+=1
+  end
+ elseif pl.dir==2 then
+  if collides({x=pl.x, y=pl.y-1}) then
+   pl.game_over = true
+  else
+   pl.y-=1
+  end
+ elseif pl.dir==3 then
+  if collides({x=pl.x, y=pl.y+1}) then
+   pl.game_over = true
+  else
+   pl.y+=1
+  end
+ else end -- no dir, initial state
+
+ if not pl.game_over and #pl.trail >= pl.len+1 then
+  local hd = pl.trail[1]
+
+  -- del() shifts the indexes
+  -- so trail becomes a queue
+  del(pl.trail, hd)
+ end
+end
+
+
+
+-- _draw functions
+
+function draw_game_over(pl)
+ if pl.game_over and #pl.trail > 0 then
+  local hd = pl.trail[#pl.trail]
+  -- cut pl's head
+  pset(hd.x,hd.y,0)
+
+  for c in all(pl.trail) do
+   if c == hd then
+    -- printh("deleted="..tostrcoord({hd.x,hd.y}))
+   else
+    -- random color except black
+    pset(c.x,c.y,flr(rnd(14))+1)
+   end
+  end
+ end
+end
+
+
+function draw_cut_tail(pl)
+ -- cleanup first
+ if #pl.trail >= pl.len then
+  local tail = pl.trail[1]
+  printh("tail="..tostrcoord(tail))
+
+  -- cut pl's tail
+  pset(tail.x,tail.y,0)
+ end
+end
+
+
+
+-- utils
 
 function tostrtable(t)
  local s = ""
