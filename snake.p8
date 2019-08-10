@@ -26,7 +26,7 @@ ps = {
 
 -- todo priorities:
 -- [x] forbid going to opposite dir
--- [ ] reappear when reached edge
+-- [x] reappear when reached edge
 -- [ ] white head, when started
 -- [ ] start screen
 
@@ -124,24 +124,36 @@ function update_snake(id)
  end
 
  if     pl.dir==0 then
+  -- out-of-bounds?
+  if (pl.x <= 0) pl.x = 127
+
   if collides({x=pl.x-1, y=pl.y}) then
    pl.game_over = true
   else
    pl.x-=1
   end
  elseif pl.dir==1 then
+  -- out-of-bounds?
+  if (pl.x >= 127) pl.x = 0
+
   if collides({x=pl.x+1, y=pl.y}) then
    pl.game_over = true
   else
    pl.x+=1
   end
  elseif pl.dir==2 then
+  -- out-of-bounds?
+  if (pl.y <= 0) pl.y = 127
+
   if collides({x=pl.x, y=pl.y-1}) then
    pl.game_over = true
   else
    pl.y-=1
   end
  elseif pl.dir==3 then
+  -- out-of-bounds?
+  if (pl.y >= 127) pl.y = 0
+
   if collides({x=pl.x, y=pl.y+1}) then
    pl.game_over = true
   else
