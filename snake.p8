@@ -32,12 +32,6 @@ ps = {
 
 -- try to leave refactoring for later
 -- and get inspired from jelpi
--- [ ] refactor the add
-
--- screen center minus the
--- string height in pixels,
--- cut in half
-vcenter=61
 
 
 function _init()
@@ -227,6 +221,11 @@ end
 function hcenter(str)
  return 64 -#str * 2
 end
+
+-- screen center minus the
+-- string height in pixels,
+-- cut in half
+vcenter=61
 
 
 -- function game_over(winner)
