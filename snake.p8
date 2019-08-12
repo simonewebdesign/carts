@@ -4,7 +4,10 @@ __lua__
 -- fruit snake
 -- by simone
 
+
 dot = {}
+-- dot.w = 8
+-- dot.h = 8
 
 p1 = {}
 p1.x = 58
@@ -27,17 +30,26 @@ ps = {
 -- todo priorities:
 -- [x] forbid going to opposite dir
 -- [x] reappear when reached edge
+-- [x] eat fruit
+-- [ ] and get longer
 -- [ ] white head, when started
 -- [ ] start screen
 
 -- try to leave refactoring for later
 -- and get inspired from jelpi
 
+-- move all update
+-- subroutines under update,
+-- and all draw ones under draw
 
 function _init()
- -- random initial coords
- dot.x = flr(rnd(127))
- dot.y = flr(rnd(127))
+ -- reset transparency 4 all
+ palt(0, false) -- do this when you figured out the code for cleaning up
+ -- todo: figure out how to
+ -- actually disable transparency, and then
+ -- use black as background color
+ rectfill(o, o, 127, 127, 0)
+ rand_dot_pos()
 end
 
 
@@ -48,13 +60,47 @@ function _update()
   update_snake(i)
  end
 
- printh("trail="..tostrtable(p1.trail))
+ -- printh("trail="..tostrtable(p1.trail))
 end
 
 
 function _draw()
+ -- printh("taken?="..tostr(dot.taken))
+ -- bg
+ -- rectfill(0, 0, 127, 127, 5)
+
+ -- dot/fruit cleanup
+ px, py = dot.prevx, dot.prevy
+ if px and py then
+  rectfill(px+2,py+2,px+5,py+5,0)
+  dot.prevx = nil
+  dot.prevy = nil
+ end
+
  -- the dot/fruit
- spr(2,dot.x,dot.y)
+ ax, ay = dot.x, dot.y
+ spr(2, ax, ay)
+
+
+ -- ax, ay = dot.x, dot.y
+ -- -- rectfill(ax+1,ay+1, ax+6, ay+6, 0)
+ -- if     dot.sprid == 1 then
+ --  rectfill(ax+1,ay+1, ax+7, ay+7, 0)
+ --  spr(1, ax, ay)
+
+ -- elseif dot.sprid == 2 then
+ --  rectfill(ax+1,ay+1, ax+7, ay+7, 0)
+ --  spr(2, ax, ay)
+
+ -- elseif dot.sprid == 3 then
+ --  rectfill(ax+2,ay+2, ax+6, ay+6, 0)
+ --  -- rectfill(ax+1,ay+1, ax+6, ay+6, 0)
+ --  spr(3, ax, ay)
+
+ -- elseif dot.sprid == nil then
+ --  -- rectfill(ax+2,ay+2, ax+5, ay+5, 1)
+ --  rectfill(ax+3,ay+3, ax+5, ay+5, 0)
+ -- end
 
  for i=0,1 do
   local pl = ps[i+1] -- 1 based
@@ -66,7 +112,7 @@ function _draw()
  -- draw p1's head
  if (not p1.game_over) then
   pset(p1.x,p1.y,12)
-  printh("head="..tostrcoord({x=p1.x, y=p1.y}))
+  -- printh("head="..tostrcoord({x=p1.x, y=p1.y}))
  end
 
  -- draw p2's head
@@ -78,9 +124,41 @@ end
 
 -- true if pixel is not black
 function collides(c)
+ -- todo: remove next line
+ -- if (pget(c.x, c.y) == 8) return false
+ -- todo: change it back to 0 below (was 1 just to test)
  return pget(c.x, c.y) > 0
 end
 
+-- coord is on fruit?
+-- function is_fruit(c)
+--  if (dot.taken) return false
+
+--  x,y = c.x, c.y
+--  a,b = dot.x, dot.y
+
+--  return
+--   (x >= a+2 and y >= b+2) or
+--   (x <= a+6 and y >= b+2) or
+--   (x <= a+6 and y <= b+6) or
+--   (x >= a+2 and y <= b+6)
+--   -- eql(x,y,a+2,b+2) or
+--   -- eql(x,y,) or
+--   -- eql(x,y,) or
+--   -- eql(x,y,) or
+--   -- eql(x,y,a+3,b+1) or
+--   -- eql(x,y,a+4,b+1) or
+--   -- eql(x,y,a+2,b+2) or
+--   -- eql(x,y,a+5,b+2) or
+--   -- eql(x,y,a+1,b+3) or
+--   -- eql(x,y,a+6,b+3) or
+--   -- eql(x,y,a+1,b+4) or
+--   -- eql(x,y,a+6,b+4) or
+--   -- eql(x,y,a+2,b+5) or
+--   -- eql(x,y,a+5,b+5) or
+--   -- eql(x,y,a+3,b+6) or
+--   -- eql(x,y,a+4,b+6)
+-- end
 
 
 -- _update functions
@@ -109,6 +187,11 @@ end
 
 
 function update_snake(id)
+ -- if (dot.taken) then
+ --  dot.taken = false
+ --  rand_dot_pos()
+ -- end
+
  local pl = ps[id+1]
 
  if pl.game_over then return end
@@ -121,7 +204,15 @@ function update_snake(id)
   -- out-of-bounds?
   if (pl.x <= 0) pl.x = 127
 
-  if collides({x=pl.x-1, y=pl.y}) then
+  nextc = {x=pl.x-1, y=pl.y}
+
+  if is_colliding(nextc, dot) then
+   dot.prevx = dot.x
+   dot.prevy = dot.y
+   rand_dot_pos()
+   pl.grow = 3
+   pl.x-=1
+  elseif collides(nextc) then
    pl.game_over = true
   else
    pl.x-=1
@@ -130,7 +221,15 @@ function update_snake(id)
   -- out-of-bounds?
   if (pl.x >= 127) pl.x = 0
 
-  if collides({x=pl.x+1, y=pl.y}) then
+  nextc = {x=pl.x+1, y=pl.y}
+
+  if is_colliding(nextc, dot) then
+   dot.prevx = dot.x
+   dot.prevy = dot.y
+   rand_dot_pos()
+   pl.grow = 3
+   pl.x+=1
+  elseif collides(nextc) then
    pl.game_over = true
   else
    pl.x+=1
@@ -139,7 +238,15 @@ function update_snake(id)
   -- out-of-bounds?
   if (pl.y <= 0) pl.y = 127
 
-  if collides({x=pl.x, y=pl.y-1}) then
+  nextc = {x=pl.x, y=pl.y-1}
+
+  if is_colliding(nextc, dot) then
+   dot.prevx = dot.x
+   dot.prevy = dot.y
+   rand_dot_pos()
+   pl.grow = 3
+   pl.y-=1
+  elseif collides(nextc) then
    pl.game_over = true
   else
    pl.y-=1
@@ -148,7 +255,15 @@ function update_snake(id)
   -- out-of-bounds?
   if (pl.y >= 127) pl.y = 0
 
-  if collides({x=pl.x, y=pl.y+1}) then
+  nextc = {x=pl.x, y=pl.y+1}
+
+  if is_colliding(nextc, dot) then
+   dot.prevx = dot.x
+   dot.prevy = dot.y
+   rand_dot_pos()
+   pl.grow = 3
+   pl.y+=1
+  elseif collides(nextc) then
    pl.game_over = true
   else
    pl.y+=1
@@ -162,6 +277,15 @@ function update_snake(id)
   -- so trail becomes a queue
   del(pl.trail, hd)
  end
+
+ printh('p1.grow='..(p1.grow or ''))
+ -- printh('sprid='..dot.sprid)
+end
+
+
+function rand_dot_pos()
+ dot.x = flr(rnd(119)) --127-8
+ dot.y = flr(rnd(119))
 end
 
 
@@ -190,7 +314,7 @@ function draw_cut_tail(pl)
  -- cleanup first
  if #pl.trail >= pl.len then
   local tail = pl.trail[1]
-  printh("tail="..tostrcoord(tail))
+  -- printh("tail="..tostrcoord(tail))
 
   -- cut pl's tail
   pset(tail.x,tail.y,0)
@@ -228,6 +352,29 @@ end
 vcenter=61
 
 
+-- same coord?
+-- function eql(a,b,x,y)
+--  return a == x and b == y
+-- end
+
+-- false if colliding
+-- a is snake, b is sprite/dot
+-- function aabb(a, b)
+--  return
+--    a.x < b.x+b.w or
+--    b.x < a.x+a.w or
+--    a.y < b.y+b.h or
+--    b.y < a.y+a.h
+-- end
+function is_colliding(a,b)
+ return not (
+  a.x < b.x+2 or
+  b.x+5 < a.x or
+  a.y < b.y+2 or
+  b.y+5 < a.y)
+end
+
+
 -- function game_over(winner)
 --  text="game over. player " ..
 --   winner .. " wins!"
@@ -239,8 +386,8 @@ __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000330000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00700700007788000003300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000078888800078880000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000088888800088880000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000078888800078880000033000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000088888800088880000088000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00700700008888000008800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000880000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __sfx__
