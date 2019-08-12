@@ -4,16 +4,13 @@ __lua__
 -- fruit snake
 -- by simone
 
-
 dot = {}
--- dot.w = 8
--- dot.h = 8
+
 
 p1 = {}
 p1.x = 58
 p1.y = 64
 p1.len = 5
--- dir is nil by default
 p1.trail = {}
 
 
@@ -22,6 +19,7 @@ p2.x = 70
 p2.y = 64
 p2.len = 5
 p2.trail = {}
+
 
 ps = {
  p1, p2
@@ -43,11 +41,7 @@ ps = {
 -- and all draw ones under draw
 
 function _init()
- -- reset transparency 4 all
- palt(0, false) -- do this when you figured out the code for cleaning up
- -- todo: figure out how to
- -- actually disable transparency, and then
- -- use black as background color
+ palt(0, false)
  rectfill(o, o, 127, 127, 0)
  rand_dot_pos()
 end
@@ -59,16 +53,10 @@ function _update()
   set_player_dir(i)
   update_snake(i)
  end
-
- -- printh("trail="..tostrtable(p1.trail))
 end
 
 
 function _draw()
- -- printh("taken?="..tostr(dot.taken))
- -- bg
- -- rectfill(0, 0, 127, 127, 5)
-
  -- dot/fruit cleanup
  px, py = dot.prevx, dot.prevy
  if px and py then
@@ -81,27 +69,6 @@ function _draw()
  ax, ay = dot.x, dot.y
  spr(2, ax, ay)
 
-
- -- ax, ay = dot.x, dot.y
- -- -- rectfill(ax+1,ay+1, ax+6, ay+6, 0)
- -- if     dot.sprid == 1 then
- --  rectfill(ax+1,ay+1, ax+7, ay+7, 0)
- --  spr(1, ax, ay)
-
- -- elseif dot.sprid == 2 then
- --  rectfill(ax+1,ay+1, ax+7, ay+7, 0)
- --  spr(2, ax, ay)
-
- -- elseif dot.sprid == 3 then
- --  rectfill(ax+2,ay+2, ax+6, ay+6, 0)
- --  -- rectfill(ax+1,ay+1, ax+6, ay+6, 0)
- --  spr(3, ax, ay)
-
- -- elseif dot.sprid == nil then
- --  -- rectfill(ax+2,ay+2, ax+5, ay+5, 1)
- --  rectfill(ax+3,ay+3, ax+5, ay+5, 0)
- -- end
-
  for i=0,1 do
   local pl = ps[i+1] -- 1 based
 
@@ -109,13 +76,12 @@ function _draw()
   draw_cut_tail(pl)
  end
 
- -- draw p1's head
+ -- p1's head
  if (not p1.game_over) then
   pset(p1.x,p1.y,12)
-  -- printh("head="..tostrcoord({x=p1.x, y=p1.y}))
  end
 
- -- draw p2's head
+ -- p2's head
  if (not p2.game_over) then
   pset(p2.x,p2.y,10)
  end
@@ -124,41 +90,8 @@ end
 
 -- true if pixel is not black
 function collides(c)
- -- todo: remove next line
- -- if (pget(c.x, c.y) == 8) return false
- -- todo: change it back to 0 below (was 1 just to test)
  return pget(c.x, c.y) > 0
 end
-
--- coord is on fruit?
--- function is_fruit(c)
---  if (dot.taken) return false
-
---  x,y = c.x, c.y
---  a,b = dot.x, dot.y
-
---  return
---   (x >= a+2 and y >= b+2) or
---   (x <= a+6 and y >= b+2) or
---   (x <= a+6 and y <= b+6) or
---   (x >= a+2 and y <= b+6)
---   -- eql(x,y,a+2,b+2) or
---   -- eql(x,y,) or
---   -- eql(x,y,) or
---   -- eql(x,y,) or
---   -- eql(x,y,a+3,b+1) or
---   -- eql(x,y,a+4,b+1) or
---   -- eql(x,y,a+2,b+2) or
---   -- eql(x,y,a+5,b+2) or
---   -- eql(x,y,a+1,b+3) or
---   -- eql(x,y,a+6,b+3) or
---   -- eql(x,y,a+1,b+4) or
---   -- eql(x,y,a+6,b+4) or
---   -- eql(x,y,a+2,b+5) or
---   -- eql(x,y,a+5,b+5) or
---   -- eql(x,y,a+3,b+6) or
---   -- eql(x,y,a+4,b+6)
--- end
 
 
 -- _update functions
@@ -187,11 +120,6 @@ end
 
 
 function update_snake(id)
- -- if (dot.taken) then
- --  dot.taken = false
- --  rand_dot_pos()
- -- end
-
  local pl = ps[id+1]
 
  if pl.game_over then return end
@@ -277,9 +205,6 @@ function update_snake(id)
   -- so trail becomes a queue
   del(pl.trail, hd)
  end
-
- printh('p1.grow='..(p1.grow or ''))
- -- printh('sprid='..dot.sprid)
 end
 
 
@@ -300,7 +225,7 @@ function draw_game_over(pl)
 
   for c in all(pl.trail) do
    if c == hd then
-    -- printh("deleted="..tostrcoord({hd.x,hd.y}))
+    -- {hd.x,hd.y} got deleted
    else
     -- random color except black
     pset(c.x,c.y,flr(rnd(14))+1)
@@ -314,8 +239,6 @@ function draw_cut_tail(pl)
  -- cleanup first
  if #pl.trail >= pl.len then
   local tail = pl.trail[1]
-  -- printh("tail="..tostrcoord(tail))
-
   -- cut pl's tail
   pset(tail.x,tail.y,0)
  end
@@ -351,21 +274,7 @@ end
 -- cut in half
 vcenter=61
 
-
--- same coord?
--- function eql(a,b,x,y)
---  return a == x and b == y
--- end
-
--- false if colliding
 -- a is snake, b is sprite/dot
--- function aabb(a, b)
---  return
---    a.x < b.x+b.w or
---    b.x < a.x+a.w or
---    a.y < b.y+b.h or
---    b.y < a.y+a.h
--- end
 function is_colliding(a,b)
  return not (
   a.x < b.x+2 or
