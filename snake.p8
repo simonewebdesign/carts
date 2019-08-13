@@ -41,8 +41,7 @@ ps = {
 -- and all draw ones under draw
 
 function _init()
- palt(0, false)
- rectfill(o, o, 127, 127, 0)
+ rectfill(0, 0, 127, 127, 0)
  rand_dot_pos()
 end
 
@@ -58,9 +57,16 @@ end
 
 function _draw()
  -- dot/fruit cleanup
- px, py = dot.prevx, dot.prevy
- if px and py then
-  rectfill(px+2,py+2,px+5,py+5,0)
+ if dot.prevx then
+  palt(0, false)
+  rectfill(
+   dot.prevx+2,
+   dot.prevy+2,
+   dot.prevx+5,
+   dot.prevy+5,
+   0
+  )
+  palt()
   dot.prevx = nil
   dot.prevy = nil
  end
