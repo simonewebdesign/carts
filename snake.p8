@@ -4,20 +4,24 @@ __lua__
 -- fruit snake
 -- by simone
 
+start_length=5
+grow_rate=6
+
+
 dot = {}
 
 
 p1 = {}
 p1.x = 58
 p1.y = 64
-p1.len = 5
+p1.len = start_length
 p1.trail = {}
 
 
 p2 = {}
 p2.x = 70
 p2.y = 64
-p2.len = 5
+p2.len = start_length
 p2.trail = {}
 
 
@@ -25,13 +29,12 @@ ps = {
  p1, p2
 }
 
--- todo priorities:
--- [x] forbid going to opposite dir
--- [x] reappear when reached edge
--- [x] eat fruit
--- [ ] and get longer
 -- [ ] white head, when started
 -- [ ] start screen
+-- sounds for
+-- picking fruit
+-- dying
+-- winning
 
 -- try to leave refactoring for later
 -- and get inspired from jelpi
@@ -144,7 +147,7 @@ function update_snake(id)
    dot.prevx = dot.x
    dot.prevy = dot.y
    rand_dot_pos()
-   pl.grow = 3
+   pl.len+= grow_rate
    pl.x-=1
   elseif collides(nextc) then
    pl.game_over = true
@@ -161,7 +164,7 @@ function update_snake(id)
    dot.prevx = dot.x
    dot.prevy = dot.y
    rand_dot_pos()
-   pl.grow = 3
+   pl.len+= grow_rate
    pl.x+=1
   elseif collides(nextc) then
    pl.game_over = true
@@ -178,7 +181,7 @@ function update_snake(id)
    dot.prevx = dot.x
    dot.prevy = dot.y
    rand_dot_pos()
-   pl.grow = 3
+   pl.len+= grow_rate
    pl.y-=1
   elseif collides(nextc) then
    pl.game_over = true
@@ -195,7 +198,7 @@ function update_snake(id)
    dot.prevx = dot.x
    dot.prevy = dot.y
    rand_dot_pos()
-   pl.grow = 3
+   pl.len+= grow_rate
    pl.y+=1
   elseif collides(nextc) then
    pl.game_over = true
@@ -242,7 +245,6 @@ end
 
 
 function draw_cut_tail(pl)
- -- cleanup first
  if #pl.trail >= pl.len then
   local tail = pl.trail[1]
   -- cut pl's tail
