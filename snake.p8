@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 16
 __lua__
--- fruit snake
+-- fruit snake brawl
 -- by simone
 
 start_length=5
@@ -9,7 +9,7 @@ grow_rate=6
 
 
 dot = {}
-
+chery = {}
 
 p1 = {}
 p1.x = 58
@@ -31,6 +31,8 @@ ps = {
 
 -- [ ] white head, when started
 -- [ ] start screen
+-- [x] do a chery sprite
+
 -- sounds for
 -- picking fruit
 -- dying
@@ -45,7 +47,11 @@ ps = {
 
 function _init()
  rectfill(0, 0, 127, 127, 0)
- rand_dot_pos()
+
+ --
+ local pos1, pos2 = rand_pos(), rand_pos()
+ dot.x, dot.y = pos1[1], pos1[2]
+ chery.x, chery.y = pos2[1], pos2[2]
 end
 
 
@@ -60,8 +66,8 @@ end
 
 function _draw()
  -- dot/fruit cleanup
+ palt(0, false)
  if dot.prevx then
-  palt(0, false)
   rectfill(
    dot.prevx+2,
    dot.prevy+2,
@@ -69,14 +75,29 @@ function _draw()
    dot.prevy+5,
    0
   )
-  palt()
   dot.prevx = nil
   dot.prevy = nil
  end
+ -- chery cleanup
+ if chery.prevx then
+  palt(0, false)
+  rectfill(
+   chery.prevx+2,
+   chery.prevy+2,
+   chery.prevx+5,
+   chery.prevy+5,
+   0
+  )
+  chery.prevx = nil
+  chery.prevy = nil
+ end
+ palt()
 
  -- the dot/fruit
- ax, ay = dot.x, dot.y
- spr(2, ax, ay)
+ spr(2, dot.x, dot.y)
+
+ -- the chery
+ spr(5, chery.x, chery.y)
 
  for i=0,1 do
   local pl = ps[i+1] -- 1 based
@@ -144,9 +165,17 @@ function update_snake(id)
   nextc = {x=pl.x-1, y=pl.y}
 
   if is_colliding(nextc, dot) then
-   dot.prevx = dot.x
-   dot.prevy = dot.y
-   rand_dot_pos()
+   pos = rand_pos()
+   dot.prevx, dot.prevy = dot.x, dot.y
+   dot.x, dot.y = pos[1], pos[2]
+
+   pl.len+= grow_rate
+   pl.x-=1
+  elseif is_colliding(nextc, chery) then
+   pos = rand_pos()
+   chery.prevx, chery.prevy = chery.x, chery.y
+   chery.x, chery.y = pos[1], pos[2]
+
    pl.len+= grow_rate
    pl.x-=1
   elseif collides(nextc) then
@@ -161,9 +190,17 @@ function update_snake(id)
   nextc = {x=pl.x+1, y=pl.y}
 
   if is_colliding(nextc, dot) then
-   dot.prevx = dot.x
-   dot.prevy = dot.y
-   rand_dot_pos()
+   pos = rand_pos()
+   dot.prevx, dot.prevy = dot.x, dot.y
+   dot.x, dot.y = pos[1], pos[2]
+
+   pl.len+= grow_rate
+   pl.x+=1
+  elseif is_colliding(nextc, chery) then
+   pos = rand_pos()
+   chery.prevx, chery.prevy = chery.x, chery.y
+   chery.x, chery.y = pos[1], pos[2]
+
    pl.len+= grow_rate
    pl.x+=1
   elseif collides(nextc) then
@@ -178,9 +215,17 @@ function update_snake(id)
   nextc = {x=pl.x, y=pl.y-1}
 
   if is_colliding(nextc, dot) then
-   dot.prevx = dot.x
-   dot.prevy = dot.y
-   rand_dot_pos()
+   pos = rand_pos()
+   dot.prevx, dot.prevy = dot.x, dot.y
+   dot.x, dot.y = pos[1], pos[2]
+
+   pl.len+= grow_rate
+   pl.y-=1
+  elseif is_colliding(nextc, chery) then
+   pos = rand_pos()
+   chery.prevx, chery.prevy = chery.x, chery.y
+   chery.x, chery.y = pos[1], pos[2]
+
    pl.len+= grow_rate
    pl.y-=1
   elseif collides(nextc) then
@@ -195,9 +240,17 @@ function update_snake(id)
   nextc = {x=pl.x, y=pl.y+1}
 
   if is_colliding(nextc, dot) then
-   dot.prevx = dot.x
-   dot.prevy = dot.y
-   rand_dot_pos()
+   pos = rand_pos()
+   dot.prevx, dot.prevy = dot.x, dot.y
+   dot.x, dot.y = pos[1], pos[2]
+
+   pl.len+= grow_rate
+   pl.y+=1
+  elseif is_colliding(nextc, chery) then
+   pos = rand_pos()
+   chery.prevx, chery.prevy = chery.x, chery.y
+   chery.x, chery.y = pos[1], pos[2]
+
    pl.len+= grow_rate
    pl.y+=1
   elseif collides(nextc) then
@@ -217,9 +270,12 @@ function update_snake(id)
 end
 
 
-function rand_dot_pos()
- dot.x = flr(rnd(119)) --127-8
- dot.y = flr(rnd(119))
+
+function rand_pos()
+ return {
+  flr(rnd(119)), --127-8
+  flr(rnd(119))
+ }
 end
 
 
@@ -301,11 +357,11 @@ end
 
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000000330000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00700700007788000003300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000078888800078880000033000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000088888800088880000088000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00700700008888000008800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000330000000000000000000000030000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700007788000003300000000000000330000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000078888800078880000033000003003000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000088888800088880000088000078008800003030000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700008888000008800000000000088008800080080000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000880000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __sfx__
 000100001415013150141501415014150141501415015150161501715018150191501a1501b1501e1501f1502215022150231502415025150261502615027150291502a1502b1502d1502f150301503215034150
