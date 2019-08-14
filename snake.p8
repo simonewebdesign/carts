@@ -24,7 +24,7 @@ p2.y = 64
 p2.len = start_length
 p2.trail = {}
 
-
+-- number of players
 ps = {
  p1, p2
 }
@@ -48,7 +48,6 @@ ps = {
 function _init()
  rectfill(0, 0, 127, 127, 0)
 
- --
  local pos1, pos2 = rand_pos(), rand_pos()
  dot.x, dot.y = pos1[1], pos1[2]
  chery.x, chery.y = pos2[1], pos2[2]
