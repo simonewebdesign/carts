@@ -165,18 +165,12 @@ function update_snake(pl)
   nextc = {x=pl.x-1, y=pl.y}
 
   if is_colliding(nextc, dot) then
-   pos = rand_pos()
-   dot.prevx, dot.prevy = dot.x, dot.y
-   dot.x, dot.y = pos[1], pos[2]
-   sfx(0)
+   on_dot_collected()
 
    pl.len+= grow_rate
    pl.x-=1
   elseif is_colliding(nextc, chery) then
-   pos = rand_pos()
-   chery.prevx, chery.prevy = chery.x, chery.y
-   chery.x, chery.y = pos[1], pos[2]
-   sfx(0)
+   on_chery_collected()
 
    pl.len+= grow_rate
    pl.x-=1
@@ -193,18 +187,12 @@ function update_snake(pl)
   nextc = {x=pl.x+1, y=pl.y}
 
   if is_colliding(nextc, dot) then
-   pos = rand_pos()
-   dot.prevx, dot.prevy = dot.x, dot.y
-   dot.x, dot.y = pos[1], pos[2]
-   sfx(0)
+   on_dot_collected()
 
    pl.len+= grow_rate
    pl.x+=1
   elseif is_colliding(nextc, chery) then
-   pos = rand_pos()
-   chery.prevx, chery.prevy = chery.x, chery.y
-   chery.x, chery.y = pos[1], pos[2]
-   sfx(0)
+   on_chery_collected()
 
    pl.len+= grow_rate
    pl.x+=1
@@ -221,18 +209,12 @@ function update_snake(pl)
   nextc = {x=pl.x, y=pl.y-1}
 
   if is_colliding(nextc, dot) then
-   pos = rand_pos()
-   dot.prevx, dot.prevy = dot.x, dot.y
-   dot.x, dot.y = pos[1], pos[2]
-   sfx(0)
+   on_dot_collected()
 
    pl.len+= grow_rate
    pl.y-=1
   elseif is_colliding(nextc, chery) then
-   pos = rand_pos()
-   chery.prevx, chery.prevy = chery.x, chery.y
-   chery.x, chery.y = pos[1], pos[2]
-   sfx(0)
+   on_chery_collected()
 
    pl.len+= grow_rate
    pl.y-=1
@@ -249,18 +231,12 @@ function update_snake(pl)
   nextc = {x=pl.x, y=pl.y+1}
 
   if is_colliding(nextc, dot) then
-   pos = rand_pos()
-   dot.prevx, dot.prevy = dot.x, dot.y
-   dot.x, dot.y = pos[1], pos[2]
-   sfx(0)
+   on_dot_collected()
 
    pl.len+= grow_rate
    pl.y+=1
   elseif is_colliding(nextc, chery) then
-   pos = rand_pos()
-   chery.prevx, chery.prevy = chery.x, chery.y
-   chery.x, chery.y = pos[1], pos[2]
-   sfx(0)
+   on_chery_collected()
 
    pl.len+= grow_rate
    pl.y+=1
@@ -281,6 +257,20 @@ function update_snake(pl)
  end
 end
 
+
+function on_dot_collected()
+ pos = rand_pos()
+ dot.prevx, dot.prevy = dot.x, dot.y
+ dot.x, dot.y = pos[1], pos[2]
+ sfx(0)
+end
+
+function on_chery_collected()
+ pos = rand_pos()
+ chery.prevx, chery.prevy = chery.x, chery.y
+ chery.x, chery.y = pos[1], pos[2]
+ sfx(0)
+end
 
 function rand_pos()
  return {
