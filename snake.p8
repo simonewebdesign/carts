@@ -31,9 +31,6 @@ ps = {
 -- number of players - 1
 plen = #ps
 
--- move all update
--- subroutines under update,
--- and all draw ones under draw
 
 function _init()
  rectfill(0, 0, 127, 127, 0)
@@ -100,6 +97,33 @@ function draw_fruits()
 
  spr(2, dot.x, dot.y)
  spr(5, chery.x, chery.y)
+end
+
+
+function draw_game_over(pl)
+ if pl.game_over and #pl.trail > 0 then
+  local hd = pl.trail[#pl.trail]
+  -- cut pl's head
+  pset(hd.x,hd.y,0)
+
+  for c in all(pl.trail) do
+   if c == hd then
+    -- {hd.x,hd.y} got deleted
+   else
+    -- random color except black
+    pset(c.x,c.y,flr(rnd(14))+1)
+   end
+  end
+ end
+end
+
+
+function draw_cut_tail(pl)
+ if #pl.trail >= pl.len then
+  local tail = pl.trail[1]
+  -- cut pl's tail
+  pset(tail.x,tail.y,0)
+ end
 end
 
 -- true if pixel is not black
@@ -258,45 +282,12 @@ function update_snake(pl)
 end
 
 
-
 function rand_pos()
  return {
   flr(rnd(119)), --127-8
   flr(rnd(119))
  }
 end
-
-
-
--- _draw functions
-
-function draw_game_over(pl)
- if pl.game_over and #pl.trail > 0 then
-  local hd = pl.trail[#pl.trail]
-  -- cut pl's head
-  pset(hd.x,hd.y,0)
-
-  for c in all(pl.trail) do
-   if c == hd then
-    -- {hd.x,hd.y} got deleted
-   else
-    -- random color except black
-    pset(c.x,c.y,flr(rnd(14))+1)
-   end
-  end
- end
-end
-
-
-function draw_cut_tail(pl)
- if #pl.trail >= pl.len then
-  local tail = pl.trail[1]
-  -- cut pl's tail
-  pset(tail.x,tail.y,0)
- end
-end
-
-
 
 -- utils
 
