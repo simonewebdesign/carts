@@ -29,7 +29,7 @@ ps = {
 }
 
 -- number of players - 1
-plen = #ps-1
+plen = #ps
 
 -- move all update
 -- subroutines under update,
@@ -45,10 +45,17 @@ end
 
 
 function _update()
- for i=0,plen do
-  update_game_over(i)
-  set_player_dir(i)
-  update_snake(i)
+ for i=1,plen do
+  local pl = ps[i]
+
+  if pl.game_over then
+    update_game_over(pl)
+    goto continue
+  end
+
+  set_player_dir(pl, i)
+  update_snake(pl)
+  ::continue::
  end
 end
 
@@ -88,8 +95,8 @@ function _draw()
  -- the chery
  spr(5, chery.x, chery.y)
 
- for i=0,plen do
-  local pl = ps[i+1] -- 1 based
+ for i=1,plen do
+  local pl = ps[i]
 
   draw_game_over(pl)
   draw_cut_tail(pl)
@@ -115,34 +122,26 @@ end
 
 -- _update functions
 
-function update_game_over(id)
- local pl = ps[id+1] -- 1 based
+function update_game_over(pl)
+ local hd = pl.trail[#pl.trail]
 
- if pl.game_over then
-  local hd = pl.trail[#pl.trail]
-
-  -- del() shifts the indexes
-  -- so trail becomes a queue
-  del(pl.trail, hd)
- end
+ -- del() shifts the indexes
+ -- so trail becomes a queue
+ del(pl.trail, hd)
 end
 
 
-function set_player_dir(id)
- local pl = ps[id+1] -- 1 based
+function set_player_dir(pl, i)
+ local idx = i-1
 
- if (pl.dir ~= 1 and btnp(0,id)) pl.dir=0
- if (pl.dir ~= 0 and btnp(1,id)) pl.dir=1
- if (pl.dir ~= 3 and btnp(2,id)) pl.dir=2
- if (pl.dir ~= 2 and btnp(3,id)) pl.dir=3
+ if (pl.dir ~= 1 and btnp(0,idx)) pl.dir=0
+ if (pl.dir ~= 0 and btnp(1,idx)) pl.dir=1
+ if (pl.dir ~= 3 and btnp(2,idx)) pl.dir=2
+ if (pl.dir ~= 2 and btnp(3,idx)) pl.dir=3
 end
 
 
-function update_snake(id)
- local pl = ps[id+1]
-
- if pl.game_over then return end
-
+function update_snake(pl)
  if pl.dir ~= nil then
   add(pl.trail, {x=pl.x, y=pl.y})
  end
@@ -261,7 +260,7 @@ function update_snake(id)
   end
  else end -- no dir, initial state
 
- if not pl.game_over and #pl.trail >= pl.len+1 then
+ if #pl.trail >= pl.len+1 then
   local hd = pl.trail[1]
 
   -- del() shifts the indexes
