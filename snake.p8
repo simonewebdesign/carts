@@ -24,22 +24,12 @@ p2.y = 64
 p2.len = start_length
 p2.trail = {}
 
--- number of players
 ps = {
  p1, p2
 }
 
--- [ ] white head, when started
--- [ ] start screen
--- [x] do a chery sprite
-
--- sounds for
--- picking fruit
--- dying
--- winning
-
--- try to leave refactoring for later
--- and get inspired from jelpi
+-- number of players - 1
+plen = #ps-1
 
 -- move all update
 -- subroutines under update,
@@ -55,7 +45,7 @@ end
 
 
 function _update()
- for i=0,1 do
+ for i=0,plen do
   update_game_over(i)
   set_player_dir(i)
   update_snake(i)
@@ -98,7 +88,7 @@ function _draw()
  -- the chery
  spr(5, chery.x, chery.y)
 
- for i=0,1 do
+ for i=0,plen do
   local pl = ps[i+1] -- 1 based
 
   draw_game_over(pl)
