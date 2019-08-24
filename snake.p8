@@ -61,39 +61,7 @@ end
 
 
 function _draw()
- -- dot/fruit cleanup
- palt(0, false)
- if dot.prevx then
-  rectfill(
-   dot.prevx+2,
-   dot.prevy+2,
-   dot.prevx+5,
-   dot.prevy+5,
-   0
-  )
-  dot.prevx = nil
-  dot.prevy = nil
- end
- -- chery cleanup
- if chery.prevx then
-  palt(0, false)
-  rectfill(
-   chery.prevx+2,
-   chery.prevy+2,
-   chery.prevx+5,
-   chery.prevy+5,
-   0
-  )
-  chery.prevx = nil
-  chery.prevy = nil
- end
- palt()
-
- -- the dot/fruit
- spr(2, dot.x, dot.y)
-
- -- the chery
- spr(5, chery.x, chery.y)
+ draw_fruits()
 
  for i=1,plen do
   local pl = ps[i]
@@ -102,17 +70,37 @@ function _draw()
   draw_cut_tail(pl)
  end
 
- -- p1's head
  if (not p1.game_over) then
-  pset(p1.x,p1.y,12)
+  pset(p1.x,p1.y,12) -- p1's head
  end
 
- -- p2's head
  if (not p2.game_over) then
-  pset(p2.x,p2.y,10)
+  pset(p2.x,p2.y,10) -- p2's head
  end
 end
 
+
+function draw_fruits()
+ palt(0, false) -- black not transparent
+
+ if dot.prevx then
+  rectfill(dot.prevx+2, dot.prevy+2, dot.prevx+5, dot.prevy+5, 0)
+  dot.prevx = nil
+  dot.prevy = nil
+ end
+
+ if chery.prevx then
+  palt(0, false)
+  rectfill(chery.prevx+2, chery.prevy+2, chery.prevx+5, chery.prevy+5, 0)
+  chery.prevx = nil
+  chery.prevy = nil
+ end
+
+ palt() -- reset transparency
+
+ spr(2, dot.x, dot.y)
+ spr(5, chery.x, chery.y)
+end
 
 -- true if pixel is not black
 function collides(c)
