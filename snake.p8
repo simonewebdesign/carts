@@ -12,15 +12,11 @@ dot = {}
 chery = {}
 
 p1 = {}
--- p1.x = 58
--- p1.y = 64
 p1.len = start_length
 p1.trail = {}
 
 
 p2 = {}
--- p2.x = 70
--- p2.y = 64
 p2.len = start_length
 p2.trail = {}
 
@@ -38,10 +34,8 @@ ps = {
 -- think of a way to remove ps
 
 
--- number of players - 1
-plen = #ps
-psel = 2
-
+plen = #ps -- number of players
+psel = 2   -- default n.of players
 
 game_started=false
 
@@ -49,12 +43,10 @@ game_started=false
 function _init()
  local offx = 26
  local offy = 16
- rectfill(0, 0, 127, 127, 1)--bg
+ rectfill(0, 0, 127, 127, 0)--bg
  spr(6,3+offx,0+offy,8,4)
  spr(64,0+offx,31+offy,10,3)
- -- spr(2,30,20)
- game_start()
- -- draw_players_select(psel)
+ txt_press_to_start()
 
  local pos1, pos2 = rand_pos(), rand_pos()
  dot.x, dot.y = pos1[1], pos1[2]
@@ -109,20 +101,18 @@ end
 
 
 function _update()
- if dn_players_select then
-  if psel < 8 and (btnp(1,0) or btnp(2,0)) then -- inc
+ if in_players_select then
+  if psel < 8 and (btnp(1,0) or btnp(2,0)) then
    psel+=1
-   d_players_select=true
-   dn_players_select=false
-  elseif psel > 1 and (btnp(3,0) or btnp(0,0)) then -- dec
+  elseif psel > 1 and (btnp(3,0) or btnp(0,0)) then
    psel-=1
-   d_players_select=true
-   dn_players_select=false
   end
+  d_players_select=true
  end
 
  if btnp(4,0) then
   d_players_select=true
+  in_players_select=true
  end
 
  if (not game_started) return
@@ -145,11 +135,8 @@ end
 function _draw()
  if d_players_select then
   clr_txt()
-  -- game_start(true)--clear
-  -- draw_players_select(true)--clear
-  draw_players_select()
+  txt_players_select()
   d_players_select=false
-  dn_players_select=true
  end
 
  if (not game_started) return
@@ -413,27 +400,23 @@ function is_colliding(a,b)
 end
 
 
--- function game_over(winner)
+-- text functions
+
+-- function txt_game_over(winner)
 --  text="game over. player " ..
 --   winner .. " wins!"
 --  print(text,hcenter(text),vcenter,8)
 -- end
 
-function game_start(clr)
- local color
- if clr then color=0 else color=7 end
-
+function txt_press_to_start(clr)
  local text="press \x8e to start"
- print(text,hcenter(text)-1,vcenter+20,color)
+ print(text,hcenter(text)-1,vcenter+20,15)
 end
 
 
-function draw_players_select(clr)
- local color
- if clr then color=0 else color=15 end
-
+function txt_players_select(clr)
  local text="number of players: " .. psel
- print(text,hcenter(text),vcenter+20,color)
+ print(text,hcenter(text),vcenter+20,7)
 end
 
 
