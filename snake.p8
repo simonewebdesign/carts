@@ -38,12 +38,13 @@ plen = #ps -- number of players
 psel = 2   -- default n.of players
 
 game_started=false
+in_initial_screen=true
 
 
 function _init()
  local offx = 26
  local offy = 16
- rectfill(0, 0, 127, 127, 0)--bg
+ draw_bg()
  spr(6,3+offx,0+offy,8,4)
  spr(64,0+offx,31+offy,10,3)
  txt_press_to_start()
@@ -106,13 +107,19 @@ function _update()
    psel+=1
   elseif psel > 1 and (btnp(3,0) or btnp(0,0)) then
    psel-=1
+  elseif btnp(4,0) then
+   d_game_start=true
+   in_players_select=false
+   game_started=true
+   return
   end
   d_players_select=true
  end
 
- if btnp(4,0) then
+ if in_initial_screen and btnp(4,0) then
   d_players_select=true
   in_players_select=true
+  in_initial_screen=false
  end
 
  if (not game_started) return
@@ -133,6 +140,11 @@ end
 
 
 function _draw()
+ if d_game_start then
+  draw_bg()
+  d_game_start=false
+ end
+
  if d_players_select then
   clr_txt()
   txt_players_select()
@@ -157,6 +169,11 @@ function _draw()
  if (not p2.game_over) then
   pset(p2.x,p2.y,10) -- p2's head
  end
+end
+
+
+function draw_bg()
+ rectfill(0, 0, 127, 127, 0)
 end
 
 
@@ -421,7 +438,7 @@ end
 
 
 function clr_txt()
- rectfill(0, 81, 127, 85, 0)--bg
+ rectfill(0, 81, 127, 85, 0)
 end
 
 __gfx__
