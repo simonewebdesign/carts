@@ -10,31 +10,17 @@ grow_rate=6
 
 dot = {}
 chery = {}
-
-p1 = {}
-p1.len = start_length
-p1.trail = {}
-
-
-p2 = {}
-p2.len = start_length
-p2.trail = {}
-
-ps = {
- p1, p2
-}
+ps = {}
+colors = { 1, 2, 3, 4, 5, 6, 7, 8 }
 
 -- legend
 -- d: draw
 -- dn: drawn
 -- clr: clear
 
--- make it work with n players
--- then
--- think of a way to remove ps
+-- new mode that shows what color you are
+-- before start of game
 
-
-plen = #ps -- number of players
 psel = 2   -- default n.of players
 
 game_started=false
@@ -52,52 +38,6 @@ function _init()
  local pos1, pos2 = rand_pos(), rand_pos()
  dot.x, dot.y = pos1[1], pos1[2]
  chery.x, chery.y = pos2[1], pos2[2]
-
- if     plen == 1 then
-  p1.x, p1.y = 64, 64
- elseif plen == 2 then
-  p1.x, p1.y = 56, 64
-  p2.x, p2.y = 72, 64
- elseif plen == 3 then
-  p1.x, p1.y = 48, 64
-  p2.x, p2.y = 64, 72
-  p3.x, p3.y = 80, 64
- elseif plen == 4 then
-  p1.x, p1.y = 48, 56
-  p2.x, p2.y = 56, 72
-  p3.x, p3.y = 64, 72
-  p4.x, p4.y = 72, 56
- elseif plen == 5 then
-  p1.x, p1.y = 48, 56
-  p2.x, p2.y = 56, 72
-  p3.x, p3.y = 64, 80
-  p4.x, p4.y = 72, 72
-  p5.x, p5.y = 80, 56
- elseif plen == 6 then
-  p1.x, p1.y = 48, 72
-  p2.x, p2.y = 64, 80
-  p3.x, p3.y = 80, 72
-  p4.x, p4.y = 48, 40
-  p5.x, p5.y = 64, 48
-  p6.x, p6.y = 80, 40
- elseif plen == 7 then
-  p1.x, p1.y = 32, 48
-  p2.x, p2.y = 40, 72
-  p3.x, p3.y = 48, 64
-  p4.x, p4.y = 56, 80
-  p5.x, p5.y = 64, 64
-  p6.x, p6.y = 72, 72
-  p7.x, p7.y = 80, 48
- elseif plen == 8 then
-  p1.x, p1.y = 44, 60
-  p2.x, p2.y = 52, 68
-  p3.x, p3.y = 60, 74
-  p4.x, p4.y = 68, 82
-  p5.x, p5.y = 76, 82
-  p6.x, p6.y = 84, 74
-  p7.x, p7.y = 92, 68
-  p8.x, p8.y = 100,60
- end
 end
 
 
@@ -107,7 +47,64 @@ function _update()
    psel+=1
   elseif psel > 1 and (btnp(3,0) or btnp(0,0)) then
    psel-=1
-  elseif btnp(4,0) then
+  elseif btnp(4,0) then -- game can start
+   -- generate players
+   for i=1,psel do
+    add(ps, {
+     len = start_length,
+     trail = {},
+     color = colors[i]
+    })
+    printh("generated: i="..i..", len="..ps[i].len)
+   end
+
+   -- assign coords
+   if     psel == 1 then
+    ps[1].x, ps[1].y = 64, 64
+   elseif psel == 2 then
+    ps[1].x, ps[1].y = 56, 64
+    ps[2].x, ps[2].y = 72, 64
+   elseif psel == 3 then
+    ps[1].x, ps[1].y = 48, 64
+    ps[2].x, ps[2].y = 64, 72
+    ps[3].x, ps[3].y = 80, 64
+   elseif psel == 4 then
+    ps[1].x, ps[1].y = 48, 56
+    ps[2].x, ps[2].y = 56, 72
+    ps[3].x, ps[3].y = 64, 72
+    ps[4].x, ps[4].y = 72, 56
+   elseif psel == 5 then
+    ps[1].x, ps[1].y = 48, 56
+    ps[2].x, ps[2].y = 56, 72
+    ps[3].x, ps[3].y = 64, 80
+    ps[4].x, ps[4].y = 72, 72
+    ps[5].x, ps[5].y = 80, 56
+   elseif psel == 6 then
+    ps[1].x, ps[1].y = 48, 72
+    ps[2].x, ps[2].y = 64, 80
+    ps[3].x, ps[3].y = 80, 72
+    ps[4].x, ps[4].y = 48, 40
+    ps[5].x, ps[5].y = 64, 48
+    ps[6].x, ps[6].y = 80, 40
+   elseif psel == 7 then
+    ps[1].x, ps[1].y = 32, 48
+    ps[2].x, ps[2].y = 40, 72
+    ps[3].x, ps[3].y = 48, 64
+    ps[4].x, ps[4].y = 56, 80
+    ps[5].x, ps[5].y = 64, 64
+    ps[6].x, ps[6].y = 72, 72
+    ps[7].x, ps[7].y = 80, 48
+   elseif psel == 8 then
+    ps[1].x, ps[1].y = 44, 60
+    ps[2].x, ps[2].y = 52, 68
+    ps[3].x, ps[3].y = 60, 74
+    ps[4].x, ps[4].y = 68, 82
+    ps[5].x, ps[5].y = 76, 82
+    ps[6].x, ps[6].y = 84, 74
+    ps[7].x, ps[7].y = 92, 68
+    ps[8].x, ps[8].y = 100,60
+   end
+
    d_game_start=true
    in_players_select=false
    game_started=true
@@ -124,7 +121,7 @@ function _update()
 
  if (not game_started) return
 
- for i=1,plen do
+ for i=1,psel do
   local pl = ps[i]
 
   if pl.game_over then
@@ -155,19 +152,17 @@ function _draw()
 
  draw_fruits()
 
- for i=1,plen do
+ for i=1,psel do
   local pl = ps[i]
+  printh("i="..i..", psel="..psel)
+  printh("pl.x="..ps[i].x)
 
-  draw_game_over(pl)
-  draw_cut_tail(pl)
- end
-
- if (not p1.game_over) then
-  pset(p1.x,p1.y,12) -- p1's head
- end
-
- if (not p2.game_over) then
-  pset(p2.x,p2.y,10) -- p2's head
+  if pl.game_over then
+   draw_game_over(pl)
+  else
+   draw_cut_tail(pl)
+   draw_head(pl)
+  end
  end
 end
 
@@ -201,18 +196,18 @@ end
 
 
 function draw_game_over(pl)
- if pl.game_over and #pl.trail > 0 then
-  local hd = pl.trail[#pl.trail]
-  -- cut pl's head
-  pset(hd.x,hd.y,0)
+ if (#pl.trail <= 0) return
 
-  for c in all(pl.trail) do
-   if c == hd then
-    -- {hd.x,hd.y} got deleted
-   else
-    -- random color except black
-    pset(c.x,c.y,flr(rnd(14))+1)
-   end
+ local hd = pl.trail[#pl.trail]
+ -- cut pl's head
+ pset(hd.x,hd.y,0)
+
+ for c in all(pl.trail) do
+  if c == hd then
+   -- {hd.x,hd.y} got deleted
+  else
+   -- random color except black
+   pset(c.x,c.y,flr(rnd(14))+1)
   end
  end
 end
@@ -225,6 +220,12 @@ function draw_cut_tail(pl)
   pset(tail.x,tail.y,0)
  end
 end
+
+
+function draw_head(pl)
+ pset(pl.x, pl.y, pl.color)
+end
+
 
 -- true if pixel is not black
 function collides(c)
