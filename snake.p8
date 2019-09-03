@@ -11,7 +11,7 @@ grow_rate=6
 dot = {}
 chery = {}
 ps = {}
-colors = { 1, 2, 3, 4, 5, 6, 7, 8 }
+colors = { 12, 8, 10, 11, 9, 2, 14, 5 }
 
 -- legend
 -- d: draw
