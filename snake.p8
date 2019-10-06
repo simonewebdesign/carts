@@ -7,16 +7,10 @@ __lua__
 start_length=5
 grow_rate=6
 
-
 dot = {}
 chery = {}
 ps = {}
 colors = { 12, 8, 10, 11, 9, 2, 14, 5 }
-
--- legend
--- d: draw
--- dn: drawn
--- clr: clear
 
 -- new mode that shows what color you are
 -- before start of game
@@ -154,9 +148,6 @@ function _draw()
 
  for i=1,psel do
   local pl = ps[i]
-  printh("i="..i..", psel="..psel)
-  printh("pl.x="..ps[i].x)
-
   if pl.game_over then
    draw_game_over(pl)
   else
