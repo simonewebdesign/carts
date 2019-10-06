@@ -20,6 +20,9 @@ psel = 2   -- default n.of players
 game_started=false
 in_initial_screen=true
 
+snk_anim_spr=1
+snk_anim_pos = { 0, 24 }
+snk_anim_delay=20
 
 function _init()
  local offx = 26
@@ -49,7 +52,6 @@ function _update()
      trail = {},
      color = colors[i]
     })
-    printh("generated: i="..i..", len="..ps[i].len)
    end
 
    -- assign coords
@@ -142,9 +144,20 @@ function _draw()
   d_players_select=false
  end
 
- -- if d_snake_anim then
- --  spr(2, dot.x, dot.y)
- -- end
+ -- 16 to 21, and 37 (7 in total)
+
+ if in_initial_screen then
+  if snk_anim_delay >= 20 then
+   spr(snk_anim_spr+15, snk_anim_pos[1], snk_anim_pos[2])
+   snk_anim_spr= snk_anim_spr+1
+   snk_anim_delay= snk_anim_delay+1
+   if (snk_anim_spr > 6) snk_anim_spr=1
+   snk_anim_delay=0
+   snk_anim_pos[1]= snk_anim_pos[1]+8
+  else
+   snk_anim_delay= snk_anim_delay+1
+  end
+ end
 
  if (not game_started) return
 
