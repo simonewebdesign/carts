@@ -142,6 +142,10 @@ function _draw()
   d_players_select=false
  end
 
+ -- if d_snake_anim then
+ --  spr(2, dot.x, dot.y)
+ -- end
+
  if (not game_started) return
 
  draw_fruits()
@@ -418,7 +422,7 @@ end
 -- end
 
 function txt_press_to_start(clr)
- local text="press \x8e to start"
+ local text="press \x97 to start"
  print(text,hcenter(text)-1,vcenter+20,15)
 end
 
