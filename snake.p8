@@ -20,9 +20,13 @@ psel = 2   -- default n.of players
 game_started=false
 in_initial_screen=true
 
-snk_anim_spr=1
-snk_anim_pos = { 0, 24 }
-snk_anim_delay=20
+snk_anim = {
+ stage = 1,
+ spr = 1,
+ pos = { x = 0, y = 24 },
+ delay = -50,
+}
+
 
 function _init()
  local offx = 26
@@ -147,15 +151,22 @@ function _draw()
  -- 16 to 21, and 37 (7 in total)
 
  if in_initial_screen then
-  if snk_anim_delay >= 20 then
-   spr(snk_anim_spr+15, snk_anim_pos[1], snk_anim_pos[2])
-   snk_anim_spr= snk_anim_spr+1
-   snk_anim_delay= snk_anim_delay+1
-   if (snk_anim_spr > 6) snk_anim_spr=1
-   snk_anim_delay=0
-   snk_anim_pos[1]= snk_anim_pos[1]+8
+  if snk_anim.delay >= 20 then
+   if snk_anim.stage == 1 then
+    spr(snk_anim.spr+15, snk_anim.pos.x, snk_anim.pos.y)
+   elseif snk_anim.stage == 2 then
+    palt(0, false) -- black not transparent
+    rectfill(snk_anim.pos.x-8, snk_anim.pos.y, 8, 8, 0)
+    palt() -- reset
+   end
+
+   snk_anim.spr= snk_anim.spr+1
+   snk_anim.delay= snk_anim.delay+1
+   if (snk_anim.spr > 6) snk_anim.spr=1
+   snk_anim.delay=0
+   snk_anim.pos.x= snk_anim.pos.x+8
   else
-   snk_anim_delay= snk_anim_delay+1
+   snk_anim.delay= snk_anim.delay+1
   end
  end
 
