@@ -5,12 +5,27 @@ __lua__
 -- by simone
 
 px = 60
-py = 110
+py = 120
+rx = 0---1
+ry = 0---1
 
 
 function _update()
- if (btn(⬅️)) px = px-1
- if (btn(➡️)) px = px+1
+ -- tick game state
+
+ if (ry > 0) ry = ry-2
+
+ -- handle input
+
+ if (btn(⬅️) and px > -1) px = px-1
+ if (btn(➡️) and px < 121) px = px+1
+
+ if btnp(❎) and ry <= 0 then
+  if (ry > 0) return
+
+  rx = px+4
+  ry = py-1
+ end
 end
 
 
@@ -18,6 +33,10 @@ function _draw()
  cls()
  rectfill(0,0,127,127,1)
  spr(1,px,py)
+
+ if rx > 0 and ry > 0 then
+  pset(rx,ry,7)
+ end
 end
 
 __gfx__
