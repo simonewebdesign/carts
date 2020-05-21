@@ -12,9 +12,6 @@ chery = {}
 ps = {}
 colors = { 12, 8, 10, 11, 9, 2, 14, 5 }
 
--- new mode that shows what color you are
--- before start of game
-
 psel = 2   -- default n.of players
 
 game_started=false
@@ -124,6 +121,13 @@ function _update()
 
  if (not game_started) return
 
+ if is_all_game_over() then
+  in_game_over=true
+  --game_started=false
+  music(-1)
+  return
+ end
+
  for i=1,psel do
   local pl = ps[i]
 
@@ -184,6 +188,10 @@ function _draw()
    draw_cut_tail(pl)
    draw_head(pl)
   end
+ end
+
+ if in_game_over then
+  txt_game_over(1)
  end
 end
 
@@ -401,6 +409,16 @@ function rand_pos()
  }
 end
 
+function is_all_game_over()
+ for i=1,psel do
+  local pl = ps[i]
+  if not pl.game_over then
+   return false
+  end
+ end
+ return true
+end
+
 -- utils
 
 function tostrtable(t)
@@ -441,11 +459,11 @@ end
 
 -- text functions
 
--- function txt_game_over(winner)
---  text="game over. player " ..
---   winner .. " wins!"
---  print(text,hcenter(text),vcenter,8)
--- end
+function txt_game_over(winner)
+ text="game over. player " ..
+  winner .. " wins!"
+ print(text,hcenter(text),vcenter,8)
+end
 
 function txt_press_to_start(clr)
  local text="press \x97 to start"
