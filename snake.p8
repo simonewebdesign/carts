@@ -53,7 +53,8 @@ function _update()
     add(ps, {
      len = start_length,
      trail = {},
-     color = colors[i]
+     color = colors[i],
+     score = 0
     })
    end
 
@@ -295,14 +296,12 @@ function update_snake(pl)
   nextc = {x=pl.x-1, y=pl.y}
 
   if is_colliding(nextc, dot) then
-   on_dot_collected()
+   on_dot_collected(pl)
 
-   pl.len+= grow_rate
    pl.x-=1
   elseif is_colliding(nextc, chery) then
-   on_chery_collected()
+   on_chery_collected(pl)
 
-   pl.len+= grow_rate
    pl.x-=1
   elseif collides(nextc) then
    sfx(1)
@@ -317,14 +316,12 @@ function update_snake(pl)
   nextc = {x=pl.x+1, y=pl.y}
 
   if is_colliding(nextc, dot) then
-   on_dot_collected()
+   on_dot_collected(pl)
 
-   pl.len+= grow_rate
    pl.x+=1
   elseif is_colliding(nextc, chery) then
-   on_chery_collected()
+   on_chery_collected(pl)
 
-   pl.len+= grow_rate
    pl.x+=1
   elseif collides(nextc) then
    sfx(1)
@@ -339,14 +336,12 @@ function update_snake(pl)
   nextc = {x=pl.x, y=pl.y-1}
 
   if is_colliding(nextc, dot) then
-   on_dot_collected()
+   on_dot_collected(pl)
 
-   pl.len+= grow_rate
    pl.y-=1
   elseif is_colliding(nextc, chery) then
-   on_chery_collected()
+   on_chery_collected(pl)
 
-   pl.len+= grow_rate
    pl.y-=1
   elseif collides(nextc) then
    sfx(1)
@@ -361,14 +356,12 @@ function update_snake(pl)
   nextc = {x=pl.x, y=pl.y+1}
 
   if is_colliding(nextc, dot) then
-   on_dot_collected()
+   on_dot_collected(pl)
 
-   pl.len+= grow_rate
    pl.y+=1
   elseif is_colliding(nextc, chery) then
-   on_chery_collected()
+   on_chery_collected(pl)
 
-   pl.len+= grow_rate
    pl.y+=1
   elseif collides(nextc) then
    sfx(1)
@@ -388,18 +381,22 @@ function update_snake(pl)
 end
 
 
-function on_dot_collected()
+function on_dot_collected(pl)
  pos = rand_pos()
  dot.prevx, dot.prevy = dot.x, dot.y
  dot.x, dot.y = pos[1], pos[2]
  sfx(0)
+ pl.len+= grow_rate
+ pl.score += flr(pl.len / grow_rate)
 end
 
-function on_chery_collected()
+function on_chery_collected(pl)
  pos = rand_pos()
  chery.prevx, chery.prevy = chery.x, chery.y
  chery.x, chery.y = pos[1], pos[2]
  sfx(0)
+ pl.len+= grow_rate
+ pl.score += flr(pl.len / grow_rate)
 end
 
 function rand_pos()
@@ -459,14 +456,27 @@ end
 
 -- text functions
 
-function txt_game_over(winner)
- text="game over. player " ..
-  winner .. " wins!"
- print(text,hcenter(text),vcenter,8)
+function txt_game_over(winner_i)
+ local text="game over. player " ..
+  winner_i .. " wins!"
+ print(text,hcenter(text),vcenter-20,8)
+ local fin="final score"
+ print(fin, hcenter(fin), vcenter-8,8)
+
+ local pl = ps[winner_i]
+ local sc = tostr(pl.score)
+ print(sc, hcenter(sc), vcenter,9)
+
+ txt_press_to_start(true)
 end
 
-function txt_press_to_start(clr)
- local text="press \x97 to start"
+function txt_press_to_start(re)
+ local text="press \x97 to "
+ if re then
+  text = text .. "restart"
+ else
+  text = text .. "start"
+ end
  print(text,hcenter(text)-1,vcenter+20,15)
 end
 
