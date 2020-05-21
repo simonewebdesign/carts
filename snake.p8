@@ -12,7 +12,7 @@ chery = {}
 ps = {}
 colors = { 12, 8, 10, 11, 9, 2, 14, 5 }
 
-psel = 2   -- default n.of players
+psel = 1   -- default n.of players
 
 game_started=false
 in_initial_screen=true
