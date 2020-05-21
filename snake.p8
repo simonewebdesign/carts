@@ -110,6 +110,7 @@ function _update()
    d_game_start=true
    in_players_select=false
    game_started=true
+   music(8)
    return
   end
   d_players_select=true
@@ -531,4 +532,5 @@ __music__
 00 41020304
 00 41020304
 02 41020304
+03 41024344
 
