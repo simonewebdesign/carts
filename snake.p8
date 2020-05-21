@@ -63,6 +63,7 @@ function _update()
  if in_game_over and btnp(4,0) then
   in_game_over=false
   ps = {}
+  _init()
   start_game()
  end
 
