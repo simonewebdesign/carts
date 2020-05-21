@@ -68,7 +68,7 @@ function _update()
 
  if (not game_started) return
 
- if is_all_game_over() then
+ if all_dead() then
   in_game_over=true
   music(-1)
   return
@@ -77,8 +77,8 @@ function _update()
  for i=1,psel do
   local pl = ps[i]
 
-  if pl.game_over then
-    update_game_over(pl)
+  if pl.dead then
+    update_death(pl)
     goto continue
   end
 
@@ -128,7 +128,7 @@ function _draw()
 
  for i=1,psel do
   local pl = ps[i]
-  if pl.game_over then
+  if pl.dead then
    draw_pl_game_over(pl)
   else
    draw_cut_tail(pl)
@@ -276,7 +276,7 @@ function start_game()
 end
 
 
-function update_game_over(pl)
+function update_death(pl)
  local hd = pl.trail[#pl.trail]
 
  -- del() shifts the indexes
@@ -315,8 +315,7 @@ function update_snake(pl)
 
    pl.x-=1
   elseif collides(nextc) then
-   sfx(1)
-   pl.game_over = true
+   die(pl)
   else
    pl.x-=1
   end
@@ -335,8 +334,7 @@ function update_snake(pl)
 
    pl.x+=1
   elseif collides(nextc) then
-   sfx(1)
-   pl.game_over = true
+   die(pl)
   else
    pl.x+=1
   end
@@ -355,8 +353,7 @@ function update_snake(pl)
 
    pl.y-=1
   elseif collides(nextc) then
-   sfx(1)
-   pl.game_over = true
+   die(pl)
   else
    pl.y-=1
   end
@@ -375,8 +372,7 @@ function update_snake(pl)
 
    pl.y+=1
   elseif collides(nextc) then
-   sfx(1)
-   pl.game_over = true
+   die(pl)
   else
    pl.y+=1
   end
@@ -417,10 +413,15 @@ function rand_pos()
  }
 end
 
-function is_all_game_over()
+function die(player)
+ sfx(1)
+ player.dead = true
+end
+
+function all_dead()
  for i=1,psel do
   local pl = ps[i]
-  if not pl.game_over then
+  if not pl.dead then
    return false
   end
  end
