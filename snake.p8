@@ -84,7 +84,7 @@ function _update()
   end
 
   set_player_dir(pl, i)
-  update_snake(pl)
+  update_snake(pl, i)
   ::continue::
  end
 end
@@ -138,7 +138,7 @@ function _draw()
  end
 
  if in_game_over then
-  txt_game_over(1)
+  txt_game_over(winner_id)
  end
 end
 
@@ -296,7 +296,7 @@ function set_player_dir(pl, i)
 end
 
 
-function update_snake(pl)
+function update_snake(pl, i)
  if pl.dir ~= nil then
   add(pl.trail, {x=pl.x, y=pl.y})
  end
@@ -316,7 +316,12 @@ function update_snake(pl)
 
    pl.x-=1
   elseif collides(nextc) then
-   die(pl)
+   if is_last_alive(i) then
+    die(pl)
+    win(i)
+   else
+    die(pl)
+   end
   else
    pl.x-=1
   end
@@ -335,7 +340,12 @@ function update_snake(pl)
 
    pl.x+=1
   elseif collides(nextc) then
-   die(pl)
+   if is_last_alive(i) then
+    die(pl)
+    win(i)
+   else
+    die(pl)
+   end
   else
    pl.x+=1
   end
@@ -354,7 +364,12 @@ function update_snake(pl)
 
    pl.y-=1
   elseif collides(nextc) then
-   die(pl)
+   if is_last_alive(i) then
+    die(pl)
+    win(i)
+   else
+    die(pl)
+   end
   else
    pl.y-=1
   end
@@ -373,7 +388,12 @@ function update_snake(pl)
 
    pl.y+=1
   elseif collides(nextc) then
-   die(pl)
+   if is_last_alive(i) then
+    die(pl)
+    win(i)
+   else
+    die(pl)
+   end
   else
    pl.y+=1
   end
@@ -426,6 +446,23 @@ function all_dead()
    return false
   end
  end
+ return true
+end
+
+function win(idx)
+ winner_id=idx
+end
+
+function is_last_alive(idx)
+ if (ps[idx].dead) return false
+
+ for i=1,psel do
+  local pl = ps[i]
+  if i ~= idx and not pl.dead then
+   return false
+  end
+ end
+
  return true
 end
 
