@@ -107,13 +107,13 @@ function _update()
     ps[8].x, ps[8].y = 100,60
    end
 
-   d_game_start=true
+   d_players_select=false
    in_players_select=false
+   d_game_start=true
    game_started=true
    music(8)
    return
   end
-  d_players_select=true
  end
 
  if in_initial_screen and btnp(4,0) then
@@ -148,7 +148,6 @@ function _draw()
  if d_players_select then
   clr_txt()
   txt_players_select()
-  d_players_select=false
  end
 
  -- 16 to 21, and 37 (7 in total)
@@ -180,7 +179,7 @@ function _draw()
  for i=1,psel do
   local pl = ps[i]
   if pl.game_over then
-   draw_game_over(pl)
+   draw_pl_game_over(pl)
   else
    draw_cut_tail(pl)
    draw_head(pl)
@@ -217,7 +216,7 @@ function draw_fruits()
 end
 
 
-function draw_game_over(pl)
+function draw_pl_game_over(pl)
  if (#pl.trail <= 0) return
 
  local hd = pl.trail[#pl.trail]
