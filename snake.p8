@@ -48,68 +48,7 @@ function _update()
   elseif psel > 1 and (btnp(3,0) or btnp(0,0)) then
    psel-=1
   elseif btnp(4,0) then -- game can start
-   -- generate players
-   for i=1,psel do
-    add(ps, {
-     len = start_length,
-     trail = {},
-     color = colors[i],
-     score = 0
-    })
-   end
-
-   -- assign coords
-   if     psel == 1 then
-    ps[1].x, ps[1].y = 64, 64
-   elseif psel == 2 then
-    ps[1].x, ps[1].y = 56, 64
-    ps[2].x, ps[2].y = 72, 64
-   elseif psel == 3 then
-    ps[1].x, ps[1].y = 48, 64
-    ps[2].x, ps[2].y = 64, 72
-    ps[3].x, ps[3].y = 80, 64
-   elseif psel == 4 then
-    ps[1].x, ps[1].y = 48, 56
-    ps[2].x, ps[2].y = 56, 72
-    ps[3].x, ps[3].y = 64, 72
-    ps[4].x, ps[4].y = 72, 56
-   elseif psel == 5 then
-    ps[1].x, ps[1].y = 48, 56
-    ps[2].x, ps[2].y = 56, 72
-    ps[3].x, ps[3].y = 64, 80
-    ps[4].x, ps[4].y = 72, 72
-    ps[5].x, ps[5].y = 80, 56
-   elseif psel == 6 then
-    ps[1].x, ps[1].y = 48, 72
-    ps[2].x, ps[2].y = 64, 80
-    ps[3].x, ps[3].y = 80, 72
-    ps[4].x, ps[4].y = 48, 40
-    ps[5].x, ps[5].y = 64, 48
-    ps[6].x, ps[6].y = 80, 40
-   elseif psel == 7 then
-    ps[1].x, ps[1].y = 32, 48
-    ps[2].x, ps[2].y = 40, 72
-    ps[3].x, ps[3].y = 48, 64
-    ps[4].x, ps[4].y = 56, 80
-    ps[5].x, ps[5].y = 64, 64
-    ps[6].x, ps[6].y = 72, 72
-    ps[7].x, ps[7].y = 80, 48
-   elseif psel == 8 then
-    ps[1].x, ps[1].y = 44, 60
-    ps[2].x, ps[2].y = 52, 68
-    ps[3].x, ps[3].y = 60, 74
-    ps[4].x, ps[4].y = 68, 82
-    ps[5].x, ps[5].y = 76, 82
-    ps[6].x, ps[6].y = 84, 74
-    ps[7].x, ps[7].y = 92, 68
-    ps[8].x, ps[8].y = 100,60
-   end
-
-   d_players_select=false
-   in_players_select=false
-   d_game_start=true
-   game_started=true
-   music(8)
+   start_game()
    return
   end
  end
@@ -120,11 +59,17 @@ function _update()
   in_initial_screen=false
  end
 
+
+ if in_game_over and btnp(4,0) then
+  in_game_over=false
+  ps = {}
+  start_game()
+ end
+
  if (not game_started) return
 
  if is_all_game_over() then
   in_game_over=true
-  --game_started=false
   music(-1)
   return
  end
@@ -264,6 +209,72 @@ end
 
 
 -- _update functions
+
+function start_game()
+ -- generate players
+ for i=1,psel do
+  add(ps, {
+   len = start_length,
+   trail = {},
+   color = colors[i],
+   score = 0
+  })
+ end
+
+ -- assign coords
+ if     psel == 1 then
+  ps[1].x, ps[1].y = 64, 64
+ elseif psel == 2 then
+  ps[1].x, ps[1].y = 56, 64
+  ps[2].x, ps[2].y = 72, 64
+ elseif psel == 3 then
+  ps[1].x, ps[1].y = 48, 64
+  ps[2].x, ps[2].y = 64, 72
+  ps[3].x, ps[3].y = 80, 64
+ elseif psel == 4 then
+  ps[1].x, ps[1].y = 48, 56
+  ps[2].x, ps[2].y = 56, 72
+  ps[3].x, ps[3].y = 64, 72
+  ps[4].x, ps[4].y = 72, 56
+ elseif psel == 5 then
+  ps[1].x, ps[1].y = 48, 56
+  ps[2].x, ps[2].y = 56, 72
+  ps[3].x, ps[3].y = 64, 80
+  ps[4].x, ps[4].y = 72, 72
+  ps[5].x, ps[5].y = 80, 56
+ elseif psel == 6 then
+  ps[1].x, ps[1].y = 48, 72
+  ps[2].x, ps[2].y = 64, 80
+  ps[3].x, ps[3].y = 80, 72
+  ps[4].x, ps[4].y = 48, 40
+  ps[5].x, ps[5].y = 64, 48
+  ps[6].x, ps[6].y = 80, 40
+ elseif psel == 7 then
+  ps[1].x, ps[1].y = 32, 48
+  ps[2].x, ps[2].y = 40, 72
+  ps[3].x, ps[3].y = 48, 64
+  ps[4].x, ps[4].y = 56, 80
+  ps[5].x, ps[5].y = 64, 64
+  ps[6].x, ps[6].y = 72, 72
+  ps[7].x, ps[7].y = 80, 48
+ elseif psel == 8 then
+  ps[1].x, ps[1].y = 44, 60
+  ps[2].x, ps[2].y = 52, 68
+  ps[3].x, ps[3].y = 60, 74
+  ps[4].x, ps[4].y = 68, 82
+  ps[5].x, ps[5].y = 76, 82
+  ps[6].x, ps[6].y = 84, 74
+  ps[7].x, ps[7].y = 92, 68
+  ps[8].x, ps[8].y = 100,60
+ end
+
+ d_players_select=false
+ in_players_select=false
+ d_game_start=true
+ game_started=true
+ music(8)
+end
+
 
 function update_game_over(pl)
  local hd = pl.trail[#pl.trail]
