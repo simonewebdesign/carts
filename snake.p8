@@ -49,21 +49,20 @@ function _update()
   elseif psel > 1 and (btnp(3,0) or btnp(0,0)) then
    psel-=1
    sfx(10)
-  elseif btnp(4,0) then -- game can start
+  elseif btnp(4,0) or btnp(5,0) then
    start_game()
    return
   end
  end
 
- if in_initial_screen and btnp(4,0) then
+ if in_initial_screen and (btnp(4,0) or btnp(5,0)) then
   sfx(11)
   d_players_select=true
   in_players_select=true
   in_initial_screen=false
  end
 
-
- if in_game_over and btnp(4,0) then
+ if in_game_over and (btnp(4,0) or btnp(5,0)) then
   in_game_over=false
   ps = {}
   _init()
