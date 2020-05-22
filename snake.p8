@@ -12,7 +12,7 @@ chery = {}
 ps = {}
 colors = { 12, 8, 10, 11, 9, 2, 14, 5 }
 
-psel = 1   -- default n.of players
+psel = 1 -- default n.of players
 
 game_started=false
 in_initial_screen=true
@@ -105,7 +105,6 @@ function _draw()
  end
 
  -- 16 to 21, and 37 (7 in total)
-
  if in_initial_screen then
   if snk_anim.delay >= 20 then
    if snk_anim.stage == 1 then
@@ -276,7 +275,7 @@ function start_game()
  in_players_select=false
  d_game_start=true
  game_started=true
- music(8)
+ music(6)
 end
 
 
@@ -614,8 +613,8 @@ __music__
 00 41020344
 00 41020344
 00 41020304
-00 41020304
-00 41020304
 02 41020304
+00 41020304
+00 41020304
 03 41024344
 
